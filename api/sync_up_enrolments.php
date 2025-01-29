@@ -27,7 +27,6 @@ class sync_up_enrolments_service extends service {
     private $turmaCategory;
     private $context;
     private $course;
-    private $diarioIsNew = false;
     private $diario;
     private $coordenacao;
     private $isRoom;
@@ -64,6 +63,9 @@ class sync_up_enrolments_service extends service {
         global $CFG;
         $prefix = "{$CFG->wwwroot}/course/view.php";
 
+        // TODO: Verificar a efetividade da validação do JSON
+        // TODO: alterar código para sincronizar cada caso se tiver presente no json
+
         $this->validate_json($jsonstring);
         $this->sync_oauth_issuer();
         $this->sync_auths();
@@ -96,13 +98,15 @@ class sync_up_enrolments_service extends service {
 
 
     function validate_json($jsonstring) {
+        global $CFG;
+
         $this->json = json_decode($jsonstring);
 
         if (!$this->json) {
             throw new \Exception("Erro ao validar o JSON, favor corrigir.");
         }
 
-        $schema = json_decode(file_get_contents("../schemas/sync_up_enrolments.schema.json"));
+        $schema = json_decode(file_get_contents($CFG->dirroot . '/local/suap/schemas/sync_up_enrolments.schema.json'));
         $validation = \Jsv4\Validator::validate($this->json, $schema);
         if (!\Jsv4\Validator::isValid($this->json, $schema)) {
             $errors = "";
@@ -336,7 +340,6 @@ class sync_up_enrolments_service extends service {
                 );
             }
             $this->course = create_course((object)$data);
-            $this->diarioIsNew = true;
         } elseif (!$this->isRoom) {
             $this->course->idnumber = $course_code_long;
             $this->course->shortname = $course_code_long;
@@ -470,10 +473,23 @@ class sync_up_enrolments_service extends service {
         global $DB;
         $data = ['courseid' => $this->course->id, 'name' => $group_name];
         $group = $DB->get_record('groups', $data);
-        if (!$group && $this->diarioIsNew) {
-            \groups_create_group((object)$data);
-            $group = $DB->get_record('groups', $data);
+        $custom_fields_metadata = \core_course\customfield\course_handler::create()->export_instance_data_object($this->course->id, true);
+        $synchronized_groups = $custom_fields_metadata->grupos_sincronizados == '' ? [] : explode(',', $custom_fields_metadata->grupos_sincronizados);
+        $is_group_synchronized = in_array($group_name, $synchronized_groups);
+        
+        if (!$group) {
+            $groupid = \groups_create_group((object)$data);
+            $group = $DB->get_record('groups', ['id' => $groupid]);
+            if (!$synchronized_groups) {
+                $synchronized_groups[] = $group_name;
+            }
+        } elseif (!$synchronized_groups) {
+            $synchronized_groups[] = $group_name;
         }
+
+        $this->course->customfield_grupos_sincronizados = implode(',', $synchronized_groups);
+        update_course($this->course);
+
         return $group;
     }
 

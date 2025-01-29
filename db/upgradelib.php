@@ -87,7 +87,7 @@ function suap_bulk_course_custom_field()
     suap_save_course_custom_field($cid, 'carga_horaria', 'Carga horária', 'number');
     suap_save_course_custom_field($cid, 'tem_certificado', 'Tem certificado', 'checkbox');
 
-    suap_save_course_custom_field($cid, 'grupos_sincronizados', 'Campos criados pelo integrador');
+    suap_save_course_custom_field($cid, 'grupos_sincronizados', 'Grupos sincronizados pelo integrador');
 }
 
 
