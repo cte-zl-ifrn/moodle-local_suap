@@ -95,3 +95,9 @@ function get_recordset_as_array($sql, $params)
     }
     return $result;
 }
+
+function get_languages() {
+    $languages = get_string_manager()->get_list_of_translations();
+    $options = array_keys($languages);
+    return implode("\n", $options);
+}

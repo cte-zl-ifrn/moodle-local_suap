@@ -34,7 +34,15 @@ function suap_save_course_custom_field($categoryid, $shortname, $name, $type = '
     return \local_suap\get_or_create(
         'customfield_field',
         ['shortname' => $shortname],
-        ['categoryid' => $categoryid, 'name' => $name, 'type' => $type, 'configdata' => $configdata, 'timecreated' => time(), 'timemodified' => time(), 'sortorder' => \local_suap\get_last_sort_order('customfield_field')]
+        [
+            'categoryid' => $categoryid, 
+            'name' => $name, 
+            'type' => $type,
+            'configdata' => $configdata,
+            'timecreated' => time(), 
+            'timemodified' => time(), 
+            'sortorder' => \local_suap\get_last_sort_order('customfield_field')
+        ]
     );
 }
 
@@ -86,6 +94,21 @@ function suap_bulk_course_custom_field()
 
     suap_save_course_custom_field($cid, 'carga_horaria', 'Carga horária', 'number');
     suap_save_course_custom_field($cid, 'tem_certificado', 'Tem certificado', 'checkbox');
+    
+    suap_save_course_custom_field(
+    $cid,
+    'linguagem_conteúdo',
+    'Linguagem do conteúdo',
+    'select',
+    json_encode([
+        "required" => "0",
+        "uniquevalues" => "0",
+        "options" => \local_suap\get_languages(),
+        "defaultvalue" => "pt_br",
+        "locked" => "0",
+        "visibility" => "2"
+        ])
+    );
 
     suap_save_course_custom_field($cid, 'grupos_sincronizados', 'Grupos sincronizados pelo integrador');
 }
