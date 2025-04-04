@@ -184,8 +184,8 @@ class sync_up_enrolments_service extends service {
         $suspended = $status == 'ativo' ? 0 : 1;
 
         $nome_parts = explode(' ', $usuario->nome);
-        $firstname = $nome_parts[0];
-        $lastname = implode(' ', array_slice($nome_parts, 1));
+        $firstname = implode(' ', array_slice($nome_parts, 0, -1));
+        $lastname = end($nome_parts);
         
         if ($usuario->isAluno) {
             $auth = $this->studentAuth;
