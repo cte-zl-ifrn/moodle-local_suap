@@ -81,7 +81,7 @@ class sync_up_enrolments_service extends service {
         if ($addMembers) {
             $this->sync_groups();
         }
-        $this->sync_cohorts(); // só existe em diário
+        $this->sync_cohorts();
 
         $this->isRoom = true;
         $this->sync_course($this->cursoCategory->id);
@@ -92,8 +92,13 @@ class sync_up_enrolments_service extends service {
         if ($addMembers) {
             $this->sync_groups();
         }
+        $this->sync_cohorts(); // só existe em diário
 
-        return ["url" => "$prefix?id={$this->diario->id}", "url_sala_coordenacao" => "$prefix?id={$this->coordenacao->id}"];
+        return [
+            "url" => "$prefix?id={$this->diario->id}",
+            "url_sala_coordenacao" => "$prefix?id={$this->coordenacao->id}",
+            "passei" => "sim"
+        ];
     }
 
 
