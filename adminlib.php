@@ -79,10 +79,20 @@ class suap_admin_settingspage extends admin_settingpage
             $this->add_configtext("default_instructor_role_id", 4);
             $this->add_configtext("default_instructor_enrol_type", $default_enrol);
 
+            $this->add_heading('notes_to_sync_header');
             $this->add_configtext("notes_to_sync", "'N1', 'N2', 'N3' , 'N4', 'NAF'");
 
-            // $authplugin = get_auth_plugin('suap');
-            // display_auth_lock_options($authplugin->authtype, $authplugin->userfields, get_string('auth_fieldlocks_help', 'auth'), false, false);
+            $this->add_heading('groups_in_course_header');
+            $this->add_configcheckbox("course_group_entrada", 1);
+            $this->add_configcheckbox("course_group_turma", 1);
+            $this->add_configcheckbox("course_group_polo", 1);
+            $this->add_configcheckbox("course_group_programa", 1);
+
+            $this->add_heading('groups_in_room_header');
+            $this->add_configcheckbox("room_group_entrada", 1);
+            $this->add_configcheckbox("room_group_turma", 1);
+            $this->add_configcheckbox("room_group_polo", 1);
+            $this->add_configcheckbox("room_group_programa", 1);
         }
     }
 }
