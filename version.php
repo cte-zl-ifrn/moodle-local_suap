@@ -23,11 +23,12 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_suap';
-$plugin->release = '0.2.057';
-$plugin->version = 2024_10_23_057;
+$plugin->release = '0.3.064';
+$plugin->version = 2025_04_22_064;
 $plugin->maturity = MATURITY_STABLE;
 
 $plugin->requires = 2021_05_17_00;
