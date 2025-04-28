@@ -30,6 +30,20 @@ require_once(__DIR__.'/upgradelib.php');
 function xmldb_local_suap_upgrade($oldversion) {
     suap_bulk_course_custom_field();
     suap_bulk_user_custom_field();
+
+    global $DB;
+
+    if ($oldversion < 2025_04_28_003) {
+        $fields = $DB->get_records('customfield_field', ['shortname' => 'carga_horaria']);
+
+        foreach ($fields as $field) {
+            $field->type = 'text';
+            $DB->update_record('customfield_field', $field);
+        }
+        upgrade_plugin_savepoint(true, 2025_04_28_003, 'local', 'suap');
+    }
+
+
     return local_suap_migrate($oldversion);
 }
 
