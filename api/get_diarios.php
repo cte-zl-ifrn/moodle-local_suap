@@ -76,7 +76,7 @@ class get_diarios_service extends \local_suap\service
                                 INNER JOIN {course} c ON (ctx.instanceid=c.id)
             WHERE u.username = ?
             ",
-            [$username]
+            [strtolower($username)]
         );
     }
 
@@ -84,8 +84,8 @@ class get_diarios_service extends \local_suap\service
     {
         global $DB, $CFG, $USER;
 
-        $USER = $DB->get_record('user', ['username' => $username]);
-        $USER = $DB->get_record('user', ['username' => $_GET['username']]);
+        $USER = $DB->get_record('user', ['username' => strtolower($username)]);
+        // $USER = $DB->get_record('user', ['username' => $_GET['username']]);
         if (!$USER) {
             return [
                 'error' => ['message' => "Usuário '{$_GET['username']}' não existe", 'code' => 404],

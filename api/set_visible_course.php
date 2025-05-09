@@ -7,12 +7,14 @@ require_once('../../../course/externallib.php');
 require_once('../locallib.php');
 require_once("servicelib.php");
 
-class set_visible_course_service extends \local_suap\service{
+class set_visible_course_service extends \local_suap\service
+{
 
-    function do_call() {
+    function do_call()
+    {
         global $DB, $USER;
 
-        $USER = $DB->get_record('user', ['username' => $_GET['username']]);
+        $USER = $DB->get_record('user', ['username' => strtolower($_GET['username'])]);
 
         $coursecontext = \context_course::instance($_GET['courseid']);
         if (!has_capability('moodle/course:visibility', $coursecontext, $USER)) {
@@ -26,13 +28,12 @@ class set_visible_course_service extends \local_suap\service{
         return $this->execute($course, $visible);
     }
 
-    function execute($course, $visible) {
+    function execute($course, $visible)
+    {
         global $DB;
 
         $course->visible = $visible;
         $DB->update_record('course', $course);
         return ["error" => false];
     }
-
-
 }

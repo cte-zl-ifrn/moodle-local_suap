@@ -195,7 +195,7 @@ class sync_up_enrolments_service extends service
     {
         global $DB;
 
-        $username = $usuario->isAluno ? $usuario->matricula : $usuario->login;
+        $username = strtolower($usuario->isAluno ? $usuario->matricula : $usuario->login);
         $email = !empty($usuario->email) ? $usuario->email : $usuario->email_secundario;
         $status = strtolower($usuario->isAluno ? $usuario->situacao : $usuario->status);
         $suspended = $status == 'ativo' ? 0 : 1;
