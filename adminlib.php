@@ -61,7 +61,7 @@ class suap_admin_settingspage extends admin_settingpage
             $this->add_configtext("top_category_parent", '0');
 
             $this->add_heading('user_and_enrolment_header');
-            $this->add_configtextarea("default_user_preferences", "auth_forcepasswordchange=0\nhtmleditor=0\nemail_bounce_count=1\nemail_send_count=1\nemail_bounce_count=0");
+            $this->add_configtextarea("default_user_preferences", "auth_forcepasswordchange=0\nhtmleditor=0\nemail_bounce_count=1\nemail_send_count=1\nemail_bounce_count=0\nvisual_preference=1");
 
             $this->add_configtext("default_student_auth", 'oauth2');
             $this->add_configtext("default_student_role_id", 5);
