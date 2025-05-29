@@ -536,8 +536,8 @@ class sync_up_enrolments_service extends service
         }
         $synchronized_groups[] = $group_name;
 
-        $this->course->customfield_grupos_sincronizados = implode(',', array_unique($synchronized_groups));
         update_course($this->course);
+        $this->course->customfield_grupos_sincronizados = implode(',', array_unique($synchronized_groups));
 
         return $group;
     }
