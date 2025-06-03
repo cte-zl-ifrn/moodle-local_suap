@@ -65,41 +65,47 @@ class sync_up_enrolments_service extends service
         );
     }
 
-    function process($jsonstring, $addMembers)
+    function process($jsonstring, $inBackground)
     {
         global $CFG;
         $prefix = "{$CFG->wwwroot}/course/view.php";
+
+        // return [
+        //     "url" => "$prefix?id=2",
+        //     "url_sala_coordenacao" => "$prefix?id=3",
+        //     "roles_not_found" => []
+        // ];
 
         // TODO: Verificar a efetividade da validação do JSON
         // TODO: alterar código para sincronizar cada caso se tiver presente no json
 
         $this->validate_json($jsonstring);
-        $this->sync_oauth_issuer();
-        $this->sync_auths();
-        $this->sync_users();
         $this->sync_categories();
 
         $this->isRoom = false;
         $this->sync_course($this->turmaCategory->id);
         $this->diario = $this->course;
-        $this->sync_enrols();
-        $this->sync_docentes_enrol();
-        $this->sync_discentes_enrol();
-        if ($addMembers) {
+        if ($inBackground) {
+            $this->sync_oauth_issuer();
+            $this->sync_auths();
+            $this->sync_users();
+            $this->sync_enrols();
+            $this->sync_docentes_enrol();
+            $this->sync_discentes_enrol();
             $this->sync_groups();
+            $this->sync_cohorts();
         }
-        $this->sync_cohorts();
 
         $this->isRoom = true;
         $this->sync_course($this->cursoCategory->id);
         $this->coordenacao = $this->course;
-        $this->sync_enrols();
-        $this->sync_docentes_enrol();
-        $this->sync_discentes_enrol();
-        if ($addMembers) {
+        if ($inBackground) {
+            $this->sync_enrols();
+            $this->sync_docentes_enrol();
+            $this->sync_discentes_enrol();
             $this->sync_groups();
+            $this->sync_cohorts(); // só existe em diário
         }
-        $this->sync_cohorts(); // só existe em diário
 
         return [
             "url" => "$prefix?id={$this->diario->id}",
