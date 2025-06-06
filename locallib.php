@@ -101,3 +101,50 @@ function get_languages() {
     $options = array_keys($languages);
     return implode("\n", $options);
 }
+
+function save_course_custom_field_category($name, $itemid=0, $contextid=1, $descriptionformat=0)
+{
+    return get_or_create(
+        'customfield_category',
+        [
+            'name' => $name, 
+            'component' => 'core_course', 
+            'area' => 'course'
+        ],
+        [
+            'sortorder' => get_last_sort_order('customfield_category'), 
+            'itemid' => $itemid, 
+            'contextid' => $contextid, 
+            'descriptionformat' => $descriptionformat, 
+            'timecreated' => time(), 
+            'timemodified' => time()
+        ]
+    );
+}
+
+function save_course_custom_field($categoryid, $shortname, $name, $type = 'text', $configdata = '{"required":"0","uniquevalues":"0","displaysize":50,"maxlength":250,"ispassword":"0","link":"","locked":"0","visibility":"0"}')
+{
+    return \local_suap\get_or_create(
+        'customfield_field',
+        ['shortname' => $shortname],
+        [
+            'categoryid' => $categoryid, 
+            'name' => $name, 
+            'type' => $type,
+            'configdata' => $configdata,
+            'timecreated' => time(), 
+            'timemodified' => time(), 
+            'sortorder' => \local_suap\get_last_sort_order('customfield_field')
+        ]
+    );
+}
+
+function save_user_custom_field($categoryid, $shortname, $name, $datatype = 'text', $visible = 1, $p1 = NULL, $p2 = NULL)
+{
+    return \local_suap\get_or_create(
+        'user_info_field',
+        ['shortname' => $shortname],
+        ['categoryid' => $categoryid, 'name' => $name, 'description' => $name, 'descriptionformat' => 2, 'datatype' => $datatype, 'visible' => $visible, 'param1' => $p1, 'param2' => $p2]
+    );
+}
+

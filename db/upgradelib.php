@@ -29,33 +29,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/local/suap/locallib.php');
-function suap_save_course_custom_field($categoryid, $shortname, $name, $type = 'text', $configdata = '{"required":"0","uniquevalues":"0","displaysize":50,"maxlength":250,"ispassword":"0","link":"","locked":"0","visibility":"0"}')
-{
-    return \local_suap\get_or_create(
-        'customfield_field',
-        ['shortname' => $shortname],
-        [
-            'categoryid' => $categoryid, 
-            'name' => $name, 
-            'type' => $type,
-            'configdata' => $configdata,
-            'timecreated' => time(), 
-            'timemodified' => time(), 
-            'sortorder' => \local_suap\get_last_sort_order('customfield_field')
-        ]
-    );
-}
-
-
-function suap_save_user_custom_field($categoryid, $shortname, $name, $datatype = 'text', $visible = 1, $p1 = NULL, $p2 = NULL)
-{
-    return \local_suap\get_or_create(
-        'user_info_field',
-        ['shortname' => $shortname],
-        ['categoryid' => $categoryid, 'name' => $name, 'description' => $name, 'descriptionformat' => 2, 'datatype' => $datatype, 'visible' => $visible, 'param1' => $p1, 'param2' => $p2]
-    );
-}
-
 
 function suap_bulk_course_custom_field()
 {
@@ -65,37 +38,37 @@ function suap_bulk_course_custom_field()
         ['name' => 'SUAP', 'component' => 'core_course', 'area' => 'course'],
         ['sortorder' => \local_suap\get_last_sort_order('customfield_category'), 'itemid' => 0, 'contextid' => 1, 'descriptionformat' => 0, 'timecreated' => time(), 'timemodified' => time()]
     )->id;
-    suap_save_course_custom_field($cid, 'campus_id', 'ID do campus');
-    suap_save_course_custom_field($cid, 'campus_descricao', 'Descrição do campus');
-    suap_save_course_custom_field($cid, 'campus_sigla', 'Sigla do campus');
+    \local_suap\save_course_custom_field($cid, 'campus_id', 'ID do campus');
+    \local_suap\save_course_custom_field($cid, 'campus_descricao', 'Descrição do campus');
+    \local_suap\save_course_custom_field($cid, 'campus_sigla', 'Sigla do campus');
 
-    suap_save_course_custom_field($cid, 'curso_id', 'ID do curso');
-    suap_save_course_custom_field($cid, 'curso_codigo', 'Código do curso');
-    suap_save_course_custom_field($cid, 'curso_descricao', 'Descrição do curso');
-    suap_save_course_custom_field($cid, 'curso_nome', 'Nome do curso');
-    suap_save_course_custom_field($cid, 'curso_sala_coordenacao', 'É sala de coordenação');
+    \local_suap\save_course_custom_field($cid, 'curso_id', 'ID do curso');
+    \local_suap\save_course_custom_field($cid, 'curso_codigo', 'Código do curso');
+    \local_suap\save_course_custom_field($cid, 'curso_descricao', 'Descrição do curso');
+    \local_suap\save_course_custom_field($cid, 'curso_nome', 'Nome do curso');
+    \local_suap\save_course_custom_field($cid, 'curso_sala_coordenacao', 'É sala de coordenação');
 
-    suap_save_course_custom_field($cid, 'turma_id', 'ID da turma');
-    suap_save_course_custom_field($cid, 'turma_codigo', 'Código da turma');
+    \local_suap\save_course_custom_field($cid, 'turma_id', 'ID da turma');
+    \local_suap\save_course_custom_field($cid, 'turma_codigo', 'Código da turma');
 
-    suap_save_course_custom_field($cid, 'turma_ano_periodo', 'Ano/Semestre da turma');
+    \local_suap\save_course_custom_field($cid, 'turma_ano_periodo', 'Ano/Semestre da turma');
 
-    suap_save_course_custom_field($cid, 'diario_id', 'ID do diario');
-    suap_save_course_custom_field($cid, 'diario_situacao', 'Situação do diario');
+    \local_suap\save_course_custom_field($cid, 'diario_id', 'ID do diario');
+    \local_suap\save_course_custom_field($cid, 'diario_situacao', 'Situação do diario');
 
-    suap_save_course_custom_field($cid, 'disciplina_id', 'ID da disciplina');
-    suap_save_course_custom_field($cid, 'disciplina_descricao', 'Descrição da disciplina');
-    suap_save_course_custom_field($cid, 'disciplina_descricao_historico', 'Descrição da disciplina que constará no histórico');
-    suap_save_course_custom_field($cid, 'disciplina_sigla', 'Sigla da disciplina');
-    suap_save_course_custom_field($cid, 'disciplina_periodo', 'Período da disciplina');
-    suap_save_course_custom_field($cid, 'disciplina_tipo', 'Tipo da disciplina');
-    suap_save_course_custom_field($cid, 'disciplina_optativo', 'Optativo da disciplina');
-    suap_save_course_custom_field($cid, 'disciplina_qtd_avaliacoes', 'Quantidade de avaliações da disciplina');
+    \local_suap\save_course_custom_field($cid, 'disciplina_id', 'ID da disciplina');
+    \local_suap\save_course_custom_field($cid, 'disciplina_descricao', 'Descrição da disciplina');
+    \local_suap\save_course_custom_field($cid, 'disciplina_descricao_historico', 'Descrição da disciplina que constará no histórico');
+    \local_suap\save_course_custom_field($cid, 'disciplina_sigla', 'Sigla da disciplina');
+    \local_suap\save_course_custom_field($cid, 'disciplina_periodo', 'Período da disciplina');
+    \local_suap\save_course_custom_field($cid, 'disciplina_tipo', 'Tipo da disciplina');
+    \local_suap\save_course_custom_field($cid, 'disciplina_optativo', 'Optativo da disciplina');
+    \local_suap\save_course_custom_field($cid, 'disciplina_qtd_avaliacoes', 'Quantidade de avaliações da disciplina');
 
-    suap_save_course_custom_field($cid, 'carga_horaria', 'Carga horária');
-    suap_save_course_custom_field($cid, 'tem_certificado', 'Tem certificado', 'checkbox');
+    \local_suap\save_course_custom_field($cid, 'carga_horaria', 'Carga horária');
+    \local_suap\save_course_custom_field($cid, 'tem_certificado', 'Tem certificado', 'checkbox');
     
-    suap_save_course_custom_field(
+    \local_suap\save_course_custom_field(
     $cid,
     'linguagem_conteúdo',
     'Linguagem do conteúdo',
@@ -110,7 +83,7 @@ function suap_bulk_course_custom_field()
         ])
     );
 
-    suap_save_course_custom_field($cid, 'grupos_sincronizados', 'Grupos sincronizados pelo integrador');
+    \local_suap\save_course_custom_field($cid, 'grupos_sincronizados', 'Grupos sincronizados pelo integrador');
 }
 
 
@@ -120,34 +93,34 @@ function suap_bulk_user_custom_field()
 
     $cid = \local_suap\get_or_create('user_info_category', ['name' => 'SUAP'], ['sortorder' => \local_suap\get_last_sort_order('user_info_category')])->id;
 
-    suap_save_user_custom_field($cid, 'email_google_classroom', 'E-mail @escolar (Google Classroom');
-    suap_save_user_custom_field($cid, 'email_academico', 'E-mail @academico (Microsoft)');
-    suap_save_user_custom_field($cid, 'email_secundario', 'Secundário (servidores)');
+    \local_suap\save_user_custom_field($cid, 'email_google_classroom', 'E-mail @escolar (Google Classroom');
+    \local_suap\save_user_custom_field($cid, 'email_academico', 'E-mail @academico (Microsoft)');
+    \local_suap\save_user_custom_field($cid, 'email_secundario', 'Secundário (servidores)');
 
-    suap_save_user_custom_field($cid, 'campus_id', 'ID do campus');
-    suap_save_user_custom_field($cid, 'campus_descricao', 'Descrição do campus');
-    suap_save_user_custom_field($cid, 'campus_sigla', 'Sigla do campus');
+    \local_suap\save_user_custom_field($cid, 'campus_id', 'ID do campus');
+    \local_suap\save_user_custom_field($cid, 'campus_descricao', 'Descrição do campus');
+    \local_suap\save_user_custom_field($cid, 'campus_sigla', 'Sigla do campus');
 
-    suap_save_user_custom_field($cid, 'curso_id', 'ID do curso');
-    suap_save_user_custom_field($cid, 'curso_codigo', 'Código do curso');
-    suap_save_user_custom_field($cid, 'curso_descricao', 'Descrição do curso');
+    \local_suap\save_user_custom_field($cid, 'curso_id', 'ID do curso');
+    \local_suap\save_user_custom_field($cid, 'curso_codigo', 'Código do curso');
+    \local_suap\save_user_custom_field($cid, 'curso_descricao', 'Descrição do curso');
 
-    suap_save_user_custom_field($cid, 'turma_id', 'ID da turma');
-    suap_save_user_custom_field($cid, 'turma_codigo', 'Código da turma');
+    \local_suap\save_user_custom_field($cid, 'turma_id', 'ID da turma');
+    \local_suap\save_user_custom_field($cid, 'turma_codigo', 'Código da turma');
 
-    suap_save_user_custom_field($cid, 'polo_id', 'ID do pólo');
-    suap_save_user_custom_field($cid, 'polo_nome', 'Nome do pólo');
+    \local_suap\save_user_custom_field($cid, 'polo_id', 'ID do pólo');
+    \local_suap\save_user_custom_field($cid, 'polo_nome', 'Nome do pólo');
 
-    suap_save_user_custom_field($cid, 'ingresso_periodo', 'Período de ingresso');
+    \local_suap\save_user_custom_field($cid, 'ingresso_periodo', 'Período de ingresso');
 
-    suap_save_user_custom_field($cid, 'nome_apresentacao', 'Nome de apresentação');
-    suap_save_user_custom_field($cid, 'nome_completo', 'Nome completo');
-    suap_save_user_custom_field($cid, 'nome_social', 'Nome social');
-    suap_save_user_custom_field($cid, 'tipo_usuario', 'Tipo de usuário');
+    \local_suap\save_user_custom_field($cid, 'nome_apresentacao', 'Nome de apresentação');
+    \local_suap\save_user_custom_field($cid, 'nome_completo', 'Nome completo');
+    \local_suap\save_user_custom_field($cid, 'nome_social', 'Nome social');
+    \local_suap\save_user_custom_field($cid, 'tipo_usuario', 'Tipo de usuário');
 
-    suap_save_user_custom_field($cid, 'programa_nome', 'Nome do programa');
+    \local_suap\save_user_custom_field($cid, 'programa_nome', 'Nome do programa');
 
-    suap_save_user_custom_field($cid, 'last_login', 'JSON do último login', 'textarea', 0);
+    \local_suap\save_user_custom_field($cid, 'last_login', 'JSON do último login', 'textarea', 0);
 }
 
 function local_suap_migrate($oldversion)
