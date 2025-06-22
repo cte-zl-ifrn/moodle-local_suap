@@ -67,19 +67,19 @@ function suap_bulk_course_custom_field()
 
     \local_suap\save_course_custom_field($cid, 'carga_horaria', 'Carga horária');
     \local_suap\save_course_custom_field($cid, 'tem_certificado', 'Tem certificado', 'checkbox');
-    
+
     \local_suap\save_course_custom_field(
-    $cid,
-    'linguagem_conteúdo',
-    'Linguagem do conteúdo',
-    'select',
-    json_encode([
-        "required" => "0",
-        "uniquevalues" => "0",
-        "options" => \local_suap\get_languages(),
-        "defaultvalue" => "pt_br",
-        "locked" => "0",
-        "visibility" => "2"
+        $cid,
+        'linguagem_conteudo',
+        'Linguagem do conteúdo',
+        'select',
+        json_encode([
+            "required" => "0",
+            "uniquevalues" => "0",
+            "options" => \local_suap\get_languages(),
+            "defaultvalue" => "pt_br",
+            "locked" => "0",
+            "visibility" => "2"
         ])
     );
 
