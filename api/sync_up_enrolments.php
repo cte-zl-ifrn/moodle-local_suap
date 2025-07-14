@@ -89,8 +89,8 @@ class sync_up_enrolments_service extends service
 
         $this->isRoom = false;
         $this->sync_course($this->turmaCategory->id);
+        $this->diario = $this->course;
         if ($inBackground) {
-            $this->diario = $this->course;
             $this->sync_enrols();
             $this->sync_docentes_enrol();
             $this->sync_discentes_enrol();
@@ -100,8 +100,8 @@ class sync_up_enrolments_service extends service
 
         $this->isRoom = true;
         $this->sync_course($this->cursoCategory->id);
+        $this->coordenacao = $this->course;
         if ($inBackground) {
-            $this->coordenacao = $this->course;
             $this->sync_enrols();
             $this->sync_docentes_enrol();
             $this->sync_discentes_enrol();
