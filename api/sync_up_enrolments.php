@@ -81,14 +81,16 @@ class sync_up_enrolments_service extends service
 
         $this->validate_json($jsonstring);
         $this->sync_categories();
-
-        $this->isRoom = false;
-        $this->sync_course($this->turmaCategory->id);
-        $this->diario = $this->course;
         if ($inBackground) {
             $this->sync_oauth_issuer();
             $this->sync_auths();
             $this->sync_users();
+        }
+
+        $this->isRoom = false;
+        $this->sync_course($this->turmaCategory->id);
+        if ($inBackground) {
+            $this->diario = $this->course;
             $this->sync_enrols();
             $this->sync_docentes_enrol();
             $this->sync_discentes_enrol();
@@ -98,13 +100,13 @@ class sync_up_enrolments_service extends service
 
         $this->isRoom = true;
         $this->sync_course($this->cursoCategory->id);
-        $this->coordenacao = $this->course;
         if ($inBackground) {
+            $this->coordenacao = $this->course;
             $this->sync_enrols();
             $this->sync_docentes_enrol();
             $this->sync_discentes_enrol();
             $this->sync_groups();
-            $this->sync_cohorts(); // só existe em diário
+            $this->sync_cohorts();
         }
 
         return [
@@ -227,7 +229,9 @@ class sync_up_enrolments_service extends service
             $usuario->user = $DB->get_record("user", ["username" => $username]);
             foreach (preg_split('/\r\n|\r|\n/', $this->default_user_preferences) as $preference) {
                 $parts = explode("=", $preference);
-                \set_user_preference($parts[0], $parts[1], $usuario->user);
+                if (count($parts) == 2) {
+                    \set_user_preference($parts[0], $parts[1], $usuario->user);
+                }
             }
 
             get_or_create(
