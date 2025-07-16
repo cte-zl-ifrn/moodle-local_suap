@@ -41,10 +41,20 @@ class sync_down_grades_service extends service
                                             inner join {grade_grades} gg on (gg.itemid=gi.id AND gg.userid = a.id_usuario)
                                 WHERE    gi.idnumber IN ($notes_to_sync)
                                 AND    gi.courseid = a.id_curso
-                        ) notas
+                        ) notas,
+                        (
+                            SELECT (coalesce(CASE WHEN COUNT(mc.id)=0.0 THEN NULL ELSE COUNT(mc.id)::FLOAT END / COUNT(cm.id)::FLOAT, 0.0) * 100.0)::DECIMAL(7,2)
+                            FROM mdl_course                                         AS c
+                                    LEFT JOIN mdl_course_modules                    AS cm ON (c.id = cm.course AND cm.completion > 0)
+                                        LEFT JOIN  mdl_course_modules_completion    AS mc ON (cm.id = mc.coursemoduleid)
+                            WHERE   c.id=a.id_curso
+                              AND   mc.userid=a.id_usuario
+                            GROUP BY c.id, c.fullname, c.shortname, c.idnumber
+                        ) completude
                 FROM     a
                 ORDER BY a.nome_completo           
             ", [$_GET['diario_id']]);
+            # Usar mais um campo para filtar além de diario_id
             $result = array_values($notas);
             foreach ($result as $key => $aluno) {
                 if ($aluno->notas != null) {
