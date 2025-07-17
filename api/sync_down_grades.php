@@ -47,8 +47,7 @@ class sync_down_grades_service extends service
                             FROM mdl_course                                         AS c
                                     LEFT JOIN mdl_course_modules                    AS cm ON (c.id = cm.course AND cm.completion > 0)
                                         LEFT JOIN  mdl_course_modules_completion    AS mc ON (cm.id = mc.coursemoduleid)
-                            WHERE   c.id=a.id_curso
-                              AND   mc.userid=a.id_usuario
+                            WHERE   (c.id=a.id_curso AND mc.userid=a.id_usuario)
                             GROUP BY c.id, c.fullname, c.shortname, c.idnumber
                         ) completude
                 FROM     a
@@ -59,6 +58,7 @@ class sync_down_grades_service extends service
             foreach ($result as $key => $aluno) {
                 if ($aluno->notas != null) {
                     $aluno->notas = json_decode($aluno->notas);
+                    $aluno->completude = $aluno->completude != null ? floatval($aluno->completude) : $aluno->completude;
                 }
             }
             return $result;
