@@ -53,8 +53,9 @@ function suap_bulk_course_custom_field()
 
     \local_suap\save_course_custom_field($cid, 'turma_ano_periodo', 'Ano/Semestre da turma');
 
-    \local_suap\save_course_custom_field($cid, 'diario_id', 'ID do diario');
-    \local_suap\save_course_custom_field($cid, 'diario_situacao', 'Situação do diario');
+    \local_suap\save_course_custom_field($cid, 'diario_id', 'ID do diário');
+    \local_suap\save_course_custom_field($cid, 'diario_tipo', 'Tipo de diário');
+    \local_suap\save_course_custom_field($cid, 'diario_situacao', 'Situação do diário');
 
     \local_suap\save_course_custom_field($cid, 'disciplina_id', 'ID da disciplina');
     \local_suap\save_course_custom_field($cid, 'disciplina_descricao', 'Descrição da disciplina');
@@ -121,6 +122,8 @@ function suap_bulk_user_custom_field()
     \local_suap\save_user_custom_field($cid, 'programa_nome', 'Nome do programa');
 
     \local_suap\save_user_custom_field($cid, 'last_login', 'JSON do último login', 'textarea', 0);
+
+    $DB->execute("INSERT INTO {user_preferences} (userid, name, value) SELECT id, 'visual_preference', 1 FROM {user} ON CONFLICT DO NOTHING");
 }
 
 function local_suap_migrate($oldversion)
