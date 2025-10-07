@@ -42,6 +42,7 @@ try {
 
         'set_favourite_course',
         'set_visible_course',
+        'set_user_preference',
         
         'sync_up_enrolments',
         // 'sync_down_attendances',
