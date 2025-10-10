@@ -12,7 +12,7 @@ class set_user_preference_service extends \local_suap\service
     {
         global $DB, $USER;
 
-        // 🔍 1. Buscar usuário pelo username informado
+        // 🔍 Buscar usuário pelo username informado
         $username = optional_param('username', null, PARAM_USERNAME);
         if ($username === null) {
             throw new \Exception("Parâmetro 'username' é obrigatório", 400);
@@ -23,9 +23,7 @@ class set_user_preference_service extends \local_suap\service
             throw new \Exception('Usuário não encontrado.', 404);
         }
 
-        require_capability('moodle/user:editownprofile', \context_user::instance($USER->id));
-
-        // 🧰 2. Pega os parâmetros enviados
+        // 🧰 Pega os parâmetros enviados
         $name = optional_param('name', null, PARAM_ALPHANUMEXT);
         $value = optional_param('value', null, PARAM_RAW);
 
@@ -33,11 +31,20 @@ class set_user_preference_service extends \local_suap\service
             throw new \Exception("Parâmetros 'name' e 'value' são obrigatórios", 400);
         }
 
-        // ✅ 3. Salva a preferência usando a API oficial
-        $value = in_array($value, [true, 'true', 1, '1'], true) ? '1' : '0';
+        // ✅ Salva a preferência usando a API oficial
+        if (in_array($value, [true, 'true', 1, '1'], true)) {
+            $value = '1';
+        } elseif (in_array($value, [false, 'false', 0, '0'], true)) {
+            $value = '0';
+        } elseif (is_numeric($value)) {
+            $value = (string)intval($value);
+        } else {
+            // Valor inesperado
+            $value = '0';
+        }
         set_user_preference($name, $value, $USER->id);
 
-        // 📬 4. Retorna uma resposta simples em JSON
+        // 📬 Retorna uma resposta simples em JSON
         return [
             'error' => false,
             'message' => 'Preferência atualizada com sucesso',
