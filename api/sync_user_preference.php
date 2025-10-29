@@ -1,62 +1,74 @@
 <?php
-
 namespace local_suap;
 
 require_once('../../../config.php');
 require_once("../locallib.php");
-require_once("servicelib.php");
 
-class sync_user_preference_service extends \local_suap\service
-{
-    function do_call()
-    {
-        global $USER;
+require_login(); // garante que o usuário está logado
+require_sesskey(); // opcional: protege contra CSRF se for alteração
 
-        // Parâmetros recebidos via GET
-        $category = required_param('category', PARAM_ALPHANUM);
-        $key      = required_param('key', PARAM_TEXT);
-        $value    = required_param('value', PARAM_RAW); // true, false ou string
+$sync_up_auth_token = config('auth_token');
+$painel_url = config('painel_url');
 
-        $username = $USER->username;
+// força saída JSON limpa
+header('Content-Type: application/json; charset=utf-8');
+while (ob_get_level()) { ob_end_clean(); }
 
-        // URL do endpoint Django
-        $url = 'http://painel/api/v1/set_user_preference/'
-             . '?username=' . urlencode($username)
-             . '&category=' . urlencode($category)
-             . '&key=' . $key
-             . '&value=' . urlencode($value);
+// Função para saída JSON consistente
+function output_json($data, $status = 200) {
+    http_response_code($status);
+    echo json_encode($data);
+    exit;
+}
 
-        // 🔹 Faz a requisição
-        $curl = new \curl();
-        $options = [
-            'CURLOPT_RETURNTRANSFER' => true,
-            'CURLOPT_TIMEOUT' => 10,
-            'CURLOPT_HTTPHEADER' => ["Authorization: Token changeme"],
-            'CURLOPT_FAILONERROR' => true
-        ];
+// Captura todos os erros como exceção (para não poluir o JSON)
+set_error_handler(function($severity, $message, $file, $line) {
+    throw new \ErrorException($message, 500, $severity, $file, $line);
+});
 
-        $response = $curl->get($url, [], $options);
+try {
+    global $USER;
 
-        if ($response === false) {
-            throw new \Exception('Falha ao conectar ao painel Django', 500);
-        }
+    // Parâmetros via GET
+    $category = required_param('category', PARAM_ALPHANUM);
+    $key      = required_param('key', PARAM_TEXT);
+    $value    = required_param('value', PARAM_RAW);
 
-        $data = json_decode($response, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            return ['status' => 'erro', 'mensagem' => 'Resposta inválida', 'resposta' => $response];
-            return $url;
-            // throw new \Exception('Resposta inválida do painel Django', 500);
-        }
+    $username = $USER->username;
 
-        // 🔹 Salva as preferências no Moodle
-        // if (isset($data['settings']) && is_array($data['settings'])) {
-        //     foreach ($data['settings'] as $category => $keys) {
-        //         foreach ($keys as $key => $value) {
-        //             set_user_preference($category . '_' . $key, $value, $USER->id);
-        //         }
-        //     }
-        // }
+    $url = $painel_url . '/api/v1/set_user_preference/'
+         . '?username=' . urlencode($username)
+         . '&category=' . urlencode($category)
+         . '&key=' . $key
+         . '&value=' . urlencode($value);
 
-        return ['status' => 'ok', 'data' => $data];
+    $curl = new \curl();
+    $options = [
+        'CURLOPT_RETURNTRANSFER' => true,
+        'CURLOPT_TIMEOUT' => 10,
+        'CURLOPT_HTTPHEADER' => ["Authorization: Token $sync_up_auth_token"],
+        'CURLOPT_FAILONERROR' => true
+    ];
+
+    $response = $curl->get($url, [], $options);
+    $data = json_decode($response, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        output_json([
+            'status' => 'erro',
+            'mensagem' => 'Resposta inválida do painel Django',
+            'resposta' => $response
+        ], 500);
     }
+
+    output_json([
+        'status' => 'ok',
+        'data' => $data
+    ]);
+
+} catch (\Exception $e) {
+    output_json([
+        'status' => 'erro',
+        'mensagem' => $e->getMessage()
+    ], $e->getCode() ?: 500);
 }
