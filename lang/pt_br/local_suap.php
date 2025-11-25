@@ -34,6 +34,9 @@ $string['auth_token_header_desc'] = 'Qual será o token utilizado pelo SUAP para
 $string["auth_token"] = 'SUAP auth token';
 $string["auth_token_desc"] = 'Qual será o token utilizado pelo SUAP para se autenticar nesta instalação do Moodle';
 
+$string['painel_url'] = 'URL do Painel AVA';
+$string['painel_url_desc'] = '(ex: https://ava.ifrn.edu.br)';
+
 # Categories
 $string['top_category_header'] = 'Categoria principal';
 $string['top_category_header_desc'] = 'Configurações padrão da categoria principal';

@@ -54,6 +54,7 @@ class suap_admin_settingspage extends admin_settingpage
             $default_enrol = is_dir(dirname(__FILE__) . '/../../enrol/suap/') ? 'suap' : 'manual';
             $this->add_heading('auth_token_header');
             $this->add_configtext("auth_token", 'changeme');
+            $this->add_configtext("painel_url", 'https://ava.ifrn.edu.br');
 
             $this->add_heading('top_category_header');
             $this->add_configtext("top_category_idnumber", 'diarios');
