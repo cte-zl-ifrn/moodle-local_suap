@@ -30,8 +30,8 @@ try {
     global $USER;
 
     // Parâmetros via GET
-    $category = required_param('category', PARAM_ALPHANUM);
-    $key      = required_param('key', PARAM_TEXT);
+    $category = required_param('category',  PARAM_RAW);
+    $key      = required_param('key', PARAM_RAW);
     $value    = required_param('value', PARAM_RAW);
 
     $username = $USER->username;

@@ -39,8 +39,7 @@ class set_user_preference_service extends \local_suap\service
         } elseif (is_numeric($value)) {
             $value = (string)intval($value);
         } else {
-            // Valor inesperado
-            $value = '0';
+            $value = (string)$value;
         }
         set_user_preference($name, $value, $USER->id);
 
