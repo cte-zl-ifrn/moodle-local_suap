@@ -356,6 +356,7 @@ class sync_up_enrolments_service extends service
                         "customfield_turma_ano_periodo" => substr($this->json->turma->codigo, 0, 4) . "." . substr($this->json->turma->codigo, 4, 1),
 
                         "customfield_diario_id" => $this->json->diario->id,
+                        "customfield_diario_tipo" => $this->json->diario->tipo,
                         "customfield_diario_situacao" => $this->json->diario->situacao,
 
                         "customfield_disciplina_id" => $this->json->componente->id,
