@@ -3,7 +3,9 @@
 namespace local_suap;
 
 // Desabilita verificação CSRF para esta API
-define('NO_MOODLE_COOKIES', true);
+if (!defined('NO_MOODLE_COOKIES')) {
+    define('NO_MOODLE_COOKIES', true);
+}
 
 require_once(\dirname(\dirname(\dirname(__DIR__))) . '/config.php');
 

@@ -7,7 +7,9 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 // Desabilita verificação CSRF para esta API
-define('NO_MOODLE_COOKIES', true);
+if (!defined('NO_MOODLE_COOKIES')) {
+    define('NO_MOODLE_COOKIES', true);
+}
 
 require_once('../../../config.php');
 require_once("../locallib.php");
