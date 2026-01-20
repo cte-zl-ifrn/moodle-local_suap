@@ -28,6 +28,9 @@ function exception_handler($exception) {
 }
 
 try {
+    // Desabilita verificação CSRF para esta API
+    define('NO_MOODLE_COOKIES', true);
+    
     require_once('../../../config.php');
     header('Content-Type: application/json; charset=utf-8');
     ini_set('display_errors', 1);

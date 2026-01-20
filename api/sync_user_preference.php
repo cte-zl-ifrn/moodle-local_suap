@@ -1,11 +1,14 @@
 <?php
 namespace local_suap;
 
+// Desabilita verificação CSRF para esta API
+define('NO_MOODLE_COOKIES', true);
+
 require_once('../../../config.php');
 require_once("../locallib.php");
 
-require_login(); // garante que o usuário está logado
-require_sesskey(); // opcional: protege contra CSRF se for alteração
+// Removido require_login() e require_sesskey() pois esta é uma API externa
+// A autenticação é feita via token no código abaixo
 
 $sync_up_auth_token = config('auth_token');
 $painel_url = config('painel_url');

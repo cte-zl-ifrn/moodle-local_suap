@@ -2,6 +2,9 @@
 
 namespace local_suap;
 
+// Desabilita verificação CSRF para esta API
+define('NO_MOODLE_COOKIES', true);
+
 require_once(\dirname(\dirname(\dirname(__DIR__))) . '/config.php');
 
 require_once($CFG->dirroot . '/course/lib.php');
