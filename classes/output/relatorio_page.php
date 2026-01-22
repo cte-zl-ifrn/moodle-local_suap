@@ -41,8 +41,11 @@ class relatorio_page implements renderable, templatable {
             $curso_nome = $record->curso_nome;
             
             if (!isset($grouped_by_curso[$curso_nome])) {
+                $course_counter++;
+
                 $grouped_by_curso[$curso_nome] = [
                     'curso_nome' => $curso_nome,
+                    'curso_id' => 'curso-' . $course_counter,
                     'campus_list' => []
                 ];
             }

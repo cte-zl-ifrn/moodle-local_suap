@@ -36,7 +36,7 @@ class report_task extends \core\task\scheduled_task {
         ON cfd_campus.fieldid = cff_campus.id
         AND cfd_campus.instanceid = c.id
 
-        WHERE cfd_diario.value = 'minicurso'
+        WHERE LOWER(cfd_diario.value) = 'minicurso'
         AND c.visible = 1
         AND c.startdate < :nowstart
         AND (c.enddate = 0 OR c.enddate > :nowend)
