@@ -85,12 +85,17 @@ class report_task extends \core\task\scheduled_task {
 
             $enrolled   = $this->count_enrolled($course->id);
             $accessed   = $this->count_accessed($course->id);
-            $completed  = $this->count_completed($course->id);
             $exam_takers = $this->count_final_exam_takers($course->id);
             $passed     = $this->count_passed($course->id);
             $avg_grade  = $this->get_average_grade($course->id);
             $with_cert  = $this->count_with_certificate($course->id);
             $eligible   = $this->count_eligible_for_certificate($course->id); // Aptos sem certificado
+            
+            $completed = $this->count_completed($course->id);
+
+            if ($completed == 0 && ($with_cert + $eligible) > 0) {
+                $completed = $with_cert + $eligible;
+            }
 
             // Pega a referência dos totais do grupo atual
             $t = $grouped[$key]['totals'];
@@ -130,8 +135,8 @@ class report_task extends \core\task\scheduled_task {
 
         }
         
-        foreach ($grouped as $key => $data) {  // ✅ Sem &
-            $t = $grouped[$key]['totals'];  // ✅ Acessa diretamente pelo $key
+        foreach ($grouped as $key => $data) {
+            $t = $grouped[$key]['totals']; 
             
             $t->avg_grade = $t->grade_count > 0
                 ? round($t->grade_sum / $t->grade_count, 2)
@@ -278,7 +283,7 @@ class report_task extends \core\task\scheduled_task {
     private function count_passed($courseid) {
         global $DB;
         
-        // Conta usuários que passaram (nota >= nota mínima do curso)
+        // Conta usuários que passaram (nota >= nota mínima do curso ou >= 6 se não configurada)
         $sql = "SELECT COUNT(DISTINCT gg.userid) as total
                 FROM {grade_grades} gg
                 JOIN {grade_items} gi ON gi.id = gg.itemid
@@ -289,7 +294,11 @@ class report_task extends \core\task\scheduled_task {
                 WHERE gi.courseid = :courseid2
                 AND gi.itemtype = 'course'
                 AND gg.finalgrade IS NOT NULL
-                AND gg.finalgrade >= gi.gradepass
+                AND gg.finalgrade >= CASE 
+                    WHEN gi.gradepass IS NULL OR gi.gradepass = 0 
+                    THEN 60 
+                    ELSE gi.gradepass 
+                END
                 AND ra.roleid = 5";
         
         $result = $DB->get_record_sql($sql, [
@@ -421,7 +430,7 @@ class report_task extends \core\task\scheduled_task {
                 $cm = $modinfo->get_cm($cert_cm->id);
                 
                 // $cm->available verifica TODAS as restrições automaticamente
-                if ($cm->available) {
+                if ($cm->uservisible) {
                     $eligible_count++;
                 }
             }
