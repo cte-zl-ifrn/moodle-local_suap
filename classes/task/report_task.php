@@ -89,7 +89,7 @@ class report_task extends \core\task\scheduled_task {
             $passed     = $this->count_passed($course->id);
             $avg_grade  = $this->get_average_grade($course->id);
             $with_cert  = $this->count_with_certificate($course->id);
-            $eligible   = $this->count_eligible_for_certificate($course->id); // Aptos sem certificado
+            $eligible = max(0, min($passed, $exam_takers) - $with_cert);
             
             $completed = $this->count_completed($course->id);
 
@@ -131,7 +131,7 @@ class report_task extends \core\task\scheduled_task {
                 $t->grade_count += $exam_takers;
             }
 
-            mtrace("   Processado: ID {$course->id} | {$curso_nome} ! {$campus} | Inscritos: {$enrolled}");
+            // mtrace("   Processado: ID {$course->id} | {$curso_nome} ! {$campus} | Inscritos: {$enrolled}");
 
         }
         
@@ -199,21 +199,22 @@ class report_task extends \core\task\scheduled_task {
     
     private function count_accessed($courseid) {
         global $DB;
-        
-        $sql = "SELECT COUNT(DISTINCT l.userid) as total
-                FROM {logstore_standard_log} l
-                JOIN {role_assignments} ra ON ra.userid = l.userid
+
+        $sql = "SELECT COUNT(DISTINCT ula.userid) AS total
+                FROM {user_lastaccess} ula
+                JOIN {role_assignments} ra ON ra.userid = ula.userid
                 JOIN {context} ctx ON ctx.id = ra.contextid
                     AND ctx.instanceid = :courseid
                     AND ctx.contextlevel = 50
-                WHERE l.courseid = :courseid2
+                WHERE ula.courseid = :courseid2
                 AND ra.roleid = 5";
-        
+
         $result = $DB->get_record_sql($sql, [
-            'courseid' => $courseid,
-            'courseid2' => $courseid
+            'courseid'  => $courseid,
+            'courseid2' => $courseid,
         ]);
-        return $result->total;
+
+        return (int)($result->total ?? 0);
     }
     
     private function count_completed($courseid) {
@@ -364,81 +365,6 @@ class report_task extends \core\task\scheduled_task {
             
         } catch (\Exception $e) {
             mtrace("Aviso: Não foi possível contar certificados - {$e->getMessage()}");
-            return 0;
-        }
-    }
-
-    private function count_eligible_for_certificate($courseid) {
-        global $DB;
-        
-        try {
-            // Verificar se existe atividade coursecertificate no curso
-            $cert_cm_sql = "SELECT cm.id, cm.availability
-                            FROM {course_modules} cm
-                            JOIN {modules} m ON m.id = cm.module
-                            WHERE cm.course = :courseid
-                            AND m.name = 'coursecertificate'
-                            AND cm.deletioninprogress = 0
-                            LIMIT 1";
-            
-            $cert_cm = $DB->get_record_sql($cert_cm_sql, ['courseid' => $courseid]);
-            
-            if (!$cert_cm) {
-                return 0; // Não tem atividade de certificado
-            }
-            
-            // Buscar todos os alunos inscritos
-            $students_sql = "SELECT DISTINCT u.id
-                            FROM {user} u
-                            JOIN {user_enrolments} ue ON ue.userid = u.id
-                            JOIN {enrol} e ON e.id = ue.enrolid
-                            JOIN {role_assignments} ra ON ra.userid = u.id
-                            JOIN {context} ctx ON ctx.id = ra.contextid 
-                                AND ctx.instanceid = e.courseid
-                                AND ctx.contextlevel = 50
-                            WHERE e.courseid = :courseid 
-                            AND ra.roleid = 5
-                            AND e.status = 0 
-                            AND ue.status = 0
-                            AND u.deleted = 0";
-            
-            $students = $DB->get_records_sql($students_sql, ['courseid' => $courseid]);
-            
-            if (empty($students)) {
-                return 0;
-            }
-            
-            $eligible_count = 0;
-            
-            // Para cada aluno, verificar se pode acessar o certificado
-            foreach ($students as $student) {
-                // Verificar se já emitiu certificado
-                $has_issued = $DB->record_exists_sql(
-                    "SELECT 1 
-                    FROM {tool_certificate_issues} tci
-                    JOIN {coursecertificate} cc ON cc.template = tci.templateid
-                    WHERE cc.course = :courseid AND tci.userid = :userid",
-                    ['courseid' => $courseid, 'userid' => $student->id]
-                );
-                
-                if ($has_issued) {
-                    continue; // Já emitiu, não conta como "apto mas não pegou"
-                }
-                
-                // Verificar se satisfaz as restrições de acesso
-                $modinfo = get_fast_modinfo($courseid, $student->id);
-                $cm = $modinfo->get_cm($cert_cm->id);
-                
-                // $cm->available verifica TODAS as restrições automaticamente
-                if ($cm->uservisible) {
-                    $eligible_count++;
-                }
-            }
-            
-            return $eligible_count;
-            
-        } catch (\Exception $e) {
-            mtrace("Aviso ao contar elegíveis: {$e->getMessage()}");
             return 0;
         }
     }
