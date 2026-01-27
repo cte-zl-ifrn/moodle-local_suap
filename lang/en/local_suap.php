@@ -98,6 +98,7 @@ $string["default_instructor_enrol_type_desc"] = 'Normally manual. Why? Because n
 # Task
 $string["sync_up_enrolments_task"] = 'Sync Up Enrolments Task';
 $string["sync_up_enrolments_task_desc"] = 'Sync Up Enrolments Task';
+$string["generate_report_task"] = 'Enviar relatório de inscrições por campus';
 
 # Notas
 $string["notes_to_sync_header"] = 'Sincronização de notas';

@@ -20,7 +20,7 @@ $tasks = [
         'dayofweek' => '*',
     ],
     [
-        'classname' => 'local_suap\task\report_task',
+        'classname' => 'local_suap\task\generate_report_task',
         'blocking' => 0,
         'minute' => '0',
         'hour' => '2',

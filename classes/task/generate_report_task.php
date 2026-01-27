@@ -3,10 +3,10 @@ namespace local_suap\task;
 
 defined('MOODLE_INTERNAL') || die();
 
-class report_task extends \core\task\scheduled_task {
+class generate_report_task extends \core\task\scheduled_task {
     
     public function get_name() {
-        return get_string('enviarelatario', 'local_relatorio_campus');
+        return get_string('generate_report_task', 'local_suap');
     }
     
     public function execute() {
