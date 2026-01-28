@@ -7,10 +7,10 @@ require_capability('moodle/site:config', context_system::instance());
 
 require_login();
 
-$PAGE->set_url(new moodle_url('/local/suap/pages/relatorio.php'));
+$PAGE->set_url(new moodle_url('/local/suap/cursos/relatorio.php'));
 $PAGE->set_context(context_system::instance());
-$PAGE->set_title(get_string('relatorio', 'local_suap'));
-$PAGE->set_heading(get_string('relatorio', 'local_suap'));
+$PAGE->set_title(get_string('generate_report_task', 'local_suap'));
+$PAGE->set_heading(get_string('generate_report_task', 'local_suap'));
 
 echo $OUTPUT->header();
 

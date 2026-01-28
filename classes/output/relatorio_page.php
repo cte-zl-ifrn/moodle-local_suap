@@ -22,7 +22,7 @@ class relatorio_page implements renderable, templatable {
         
         if (!$latest_time) {
             $data->hasdata = false;
-            $data->nodatamessage = get_string('nodatayet', 'local_suap');
+            $data->nodatamessage = get_string('nodata', 'analytics');
             return $data;
         }
         
