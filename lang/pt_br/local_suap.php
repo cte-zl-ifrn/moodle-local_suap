@@ -56,6 +56,8 @@ $string["default_user_preferences"] = 'Preferências padrão do usuário';
 $string["default_user_preferences_desc"] = 'Todo novo usuário (aluno ou professor) terá essas preferências. Use uma linha por preferência. Como um arquivo .ini.';
 
 # Student
+$string["student_settings_header"] = 'Sincronização de estudantes';
+$string["student_settings_header_desc"] = 'Sincronização de estudantes';
 $string["default_student_auth"] = 'Autenticação de método padrão para novos usuários alunos';
 $string["default_student_auth_desc"] = 'Recomendamos que você configure oAuth com SOAP, mas... as escolhas são suas. Mas por que oauth? Porque seus alunos podem usufruir do portal SSO e AVA para SUAP.';
 $string["default_student_role_id"] = 'Roleid padrão para uma inscrição de aluno';
@@ -63,15 +65,9 @@ $string["default_student_role_id_desc"] = 'Normalmente 5. Por quê? Este é o pa
 $string["default_student_enrol_type"] = 'Enrol_type padrão para uma inscrição de aluno inativa';
 $string["default_student_enrol_type_desc"] = 'Normalmente manuais. Por que? Porque os novos alunos serão matriculados no SUAP e sincronizados com o Moodle';
 
-# Inactivated Student
-$string["default_inactivated_student_auth"] = 'Default method authentication for inactivated student users';
-$string["default_inactivated_student_auth_desc"] = 'We recommend that you configure oAuth with SOAP, but... the choices are yours. But why oauth? Because your students can take advantage of the SSO and Painel AVA for SUAP.';
-$string["default_inactivated_student_role_id"] = 'Default roleid for a inactivated student enrolment';
-$string["default_inactivated_student_role_id_desc"] = 'Normally 5. Why? This is the Moodle default.';
-$string["default_inactivated_student_enrol_type"] = 'Default enrol_type for a inactivated student enrolment';
-$string["default_inactivated_student_enrol_type_desc"] = 'Normally manual. Why? Because inactivated students will be enrolled -manually- on SUAP and synched to Moodle';
-
 # Teacher
+$string["teacher_settings_header"] = 'Sincronização de professores';
+$string["teacher_settings_header_desc"] = 'Sincronização de professores';
 $string["default_teacher_auth"] = 'Autenticação de método padrão para novos usuários professores';
 $string["default_teacher_auth_desc"] = 'Recomendamos que você configure oAuth com SOAP, mas... as escolhas são suas. Mas por que oauth? Porque seus alunos podem usufruir do portal SSO e AVA para SUAP.';
 $string["default_teacher_role_id"] = 'Roleid padrão para uma inscrição como professor';
@@ -79,7 +75,9 @@ $string["default_teacher_role_id_desc"] = 'Normalmente 5. Por quê? Este é o pa
 $string["default_teacher_enrol_type"] = 'Enrol_type padrão para uma inscrição como professor';
 $string["default_teacher_enrol_type_desc"] = 'Normalmente manuais. Por que? Porque os novos alunos serão matriculados no SUAP e sincronizados com o Moodle';
 
-# Assistant
+# Tutores
+$string["assistant_settings_header"] = 'Sincronização de tutores';
+$string["assistant_settings_header_desc"] = 'Sincronização de tutores';
 $string["default_assistant_auth"] = 'Autenticação de método padrão para novos usuários tutores';
 $string["default_assistant_auth_desc"] = 'Recomendamos que você configure oAuth com SOAP, mas... as escolhas são suas. Mas por que oauth? Porque seus alunos podem usufruir do portal SSO e AVA para SUAP.';
 $string["default_assistant_role_id"] = 'Roleid padrão para uma inscrição como tutor';
@@ -87,13 +85,35 @@ $string["default_assistant_role_id_desc"] = 'Normalmente 5. Por quê? Este é o 
 $string["default_assistant_enrol_type"] = 'Enrol_type padrão para uma inscrição como tutor';
 $string["default_assistant_enrol_type_desc"] = 'Normalmente manuais. Por que? Porque os novos alunos serão matriculados no SUAP e sincronizados com o Moodle';
 
-# Instructor
-$string["default_instructor_auth"] = 'Autenticação de método padrão para novos usuários moderadores em salas de coordenação';
+# Docentes nas salas de coordenação
+$string["instructor_settings_header"] = 'Sincronização de colaboradores em salas de coordenação';
+$string["instructor_settings_header_desc"] = 'Sincronização de colaboradores em salas de coordenação';
+$string["default_instructor_auth"] = 'Autenticação de método padrão para novos usuários docentes em salas de coordenação';
 $string["default_instructor_auth_desc"] = 'Recomendamos que você configure oAuth com SOAP, mas... as escolhas são suas. Mas por que oauth? Porque seus alunos podem usufruir do portal SSO e AVA para SUAP.';
-$string["default_instructor_role_id"] = 'Roleid padrão para uma inscrição como moderador em salas de coordenação';
+$string["default_instructor_role_id"] = 'Roleid padrão para uma inscrição como docente em salas de coordenação';
 $string["default_instructor_role_id_desc"] = 'Normalmente 4. Por quê? Este é o padrão do Moodle para professores que não podem editar.';
-$string["default_instructor_enrol_type"] = 'Enrol_type padrão para uma inscrição como moderador em salas de coordenação';
-$string["default_instructor_enrol_type_desc"] = 'Normalmente manuais. Por que? Porque os novos moderadores em salas de coordenação serão matriculados no SUAP e sincronizados com o Moodle';
+$string["default_instructor_enrol_type"] = 'Enrol_type padrão para uma inscrição como docente em salas de coordenação';
+$string["default_instructor_enrol_type_desc"] = 'Normalmente manuais. Por que? Porque os novos docentes em salas de coordenação serão matriculados no SUAP e sincronizados com o Moodle';
+
+# Formador
+$string["former_settings_header"] = 'Sincronização de formadores';
+$string["former_settings_header_desc"] = 'Sincronização de formadores';
+$string["default_former_auth"] = 'Autenticação de método padrão para novos usuários formadores em salas de coordenação';
+$string["default_former_auth_desc"] = 'Recomendamos que você configure oAuth com SOAP, mas... as escolhas são suas. Mas por que oauth? Porque seus alunos podem usufruir do portal SSO e AVA para SUAP.';
+$string["default_former_role_id"] = 'Roleid padrão para uma inscrição como formador em salas de coordenação';
+$string["default_former_role_id_desc"] = 'Normalmente 4. Por quê? Este é o padrão do Moodle para professores que não podem editar.';
+$string["default_former_enrol_type"] = 'Enrol_type padrão para uma inscrição como formador em salas de coordenação';
+$string["default_former_enrol_type_desc"] = 'Normalmente manuais. Por que? Porque os novos formadores em salas de coordenação serão matriculados no SUAP e sincronizados com o Moodle';
+
+# Mediador
+$string["moderator_settings_header"] = 'Sincronização de moderadores';
+$string["moderator_settings_header_desc"] = 'Sincronização de moderadores';
+$string["default_moderator_auth"] = 'Autenticação de método padrão para novos usuários moderadores em salas de coordenação';
+$string["default_moderator_auth_desc"] = 'Recomendamos que você configure oAuth com SOAP, mas... as escolhas são suas. Mas por que oauth? Porque seus alunos podem usufruir do portal SSO e AVA para SUAP.';
+$string["default_moderator_role_id"] = 'Roleid padrão para uma inscrição como moderador em salas de coordenação';
+$string["default_moderator_role_id_desc"] = 'Normalmente 4. Por quê? Este é o padrão do Moodle para professores que não podem editar.';
+$string["default_moderator_enrol_type"] = 'Enrol_type padrão para uma inscrição como moderador em salas de coordenação';
+$string["default_moderator_enrol_type_desc"] = 'Normalmente manuais. Por que? Porque os novos moderadores em salas de coordenação serão matriculados no SUAP e sincronizados com o Moodle';
 
 # Task
 $string["sync_up_enrolments_task"] = 'Sync Up Enrolments Task';

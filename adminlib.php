@@ -64,18 +64,32 @@ class suap_admin_settingspage extends admin_settingpage
             $this->add_heading('user_and_enrolment_header');
             $this->add_configtextarea("default_user_preferences", "auth_forcepasswordchange=0\nhtmleditor=0\nemail_bounce_count=1\nemail_send_count=1\nemail_bounce_count=0\nvisual_preference=1");
 
+            $this->add_heading('student_settings_header');
             $this->add_configtext("default_student_auth", 'oauth2');
             $this->add_configtext("default_student_role_id", 5);
             $this->add_configtext("default_student_enrol_type", $default_enrol);
 
+            $this->add_heading('teacher_settings_header');
             $this->add_configtext("default_teacher_auth", 'oauth2');
             $this->add_configtext("default_teacher_role_id", 3);
             $this->add_configtext("default_teacher_enrol_type", $default_enrol);
 
+            $this->add_heading('assistant_settings_header');
             $this->add_configtext("default_assistant_auth", 'oauth2');
             $this->add_configtext("default_assistant_role_id", 4);
             $this->add_configtext("default_assistant_enrol_type", $default_enrol);
 
+            $this->add_heading('former_settings_header');
+            $this->add_configtext("default_former_auth", 'oauth2');
+            $this->add_configtext("default_former_role_id", 4);
+            $this->add_configtext("default_former_enrol_type", $default_enrol);
+
+            $this->add_heading('moderator_settings_header');
+            $this->add_configtext("default_moderator_auth", 'oauth2');
+            $this->add_configtext("default_moderator_role_id", 4);
+            $this->add_configtext("default_moderator_enrol_type", $default_enrol);
+
+            $this->add_heading('instructor_settings_header');
             $this->add_configtext("default_instructor_auth", 'oauth2');
             $this->add_configtext("default_instructor_role_id", 4);
             $this->add_configtext("default_instructor_enrol_type", $default_enrol);
