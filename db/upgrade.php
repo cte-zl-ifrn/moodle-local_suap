@@ -44,6 +44,50 @@ function xmldb_local_suap_upgrade($oldversion)
         upgrade_plugin_savepoint(true, 20250428003, 'local', 'suap');
     }
 
+    if ($oldversion < 20260130081) {
+
+        $dbman = $DB->get_manager();
+
+        $table = new xmldb_table('local_suap_relatorio_cursos_autoinstrucionais');
+
+        if (!$dbman->table_exists($table)) {
+
+            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
+
+            $table->add_field('curso_nome', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL);
+            $table->add_field('campus', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL);
+
+            $table->add_field('diario_tipo', XMLDB_TYPE_CHAR, '50', null, XMLDB_NOTNULL);
+            $table->add_field('quantidade_cursos', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '1');
+
+            $table->add_field('total_enrolled', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $table->add_field('accessed', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $table->add_field('no_access', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+            $table->add_field('final_exam_takers', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $table->add_field('passed', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $table->add_field('failed', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+            $table->add_field('avg_grade', XMLDB_TYPE_NUMBER, '10,2', null, XMLDB_NOTNULL, null, '0');
+
+            $table->add_field('with_certificate', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $table->add_field('without_certificate', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $table->add_field('completed', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+            $table->add_field('timegenerated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
+            $table->add_index('idx_curso_nome', XMLDB_INDEX_NOTUNIQUE, ['curso_nome']);
+            $table->add_index('idx_campus', XMLDB_INDEX_NOTUNIQUE, ['campus']);
+            $table->add_index('idx_diario_tipo', XMLDB_INDEX_NOTUNIQUE, ['diario_tipo']);
+            $table->add_index('idx_timegenerated', XMLDB_INDEX_NOTUNIQUE, ['timegenerated']);
+
+            $dbman->create_table($table);
+        }
+
+        upgrade_plugin_savepoint(true, 20260130081, 'local', 'suap');
+    }
 
     return local_suap_migrate($oldversion);
 }

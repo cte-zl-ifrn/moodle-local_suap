@@ -118,6 +118,7 @@ $string["default_moderator_enrol_type_desc"] = 'Normalmente manuais. Por que? Po
 # Task
 $string["sync_up_enrolments_task"] = 'Sync Up Enrolments Task';
 $string["sync_up_enrolments_task_desc"] = 'Sync Up Enrolments Task';
+$string["generate_report_task"] = 'Create a report of self-instructional courses.';
 
 # Notas
 $string["notes_to_sync_header"] = 'Sincronização de notas';
