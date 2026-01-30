@@ -44,7 +44,7 @@ function xmldb_local_suap_upgrade($oldversion)
         upgrade_plugin_savepoint(true, 20250428003, 'local', 'suap');
     }
 
-    if ($oldversion < 20260127080) {
+    if ($oldversion < 20260130081) {
 
         $dbman = $DB->get_manager();
 
@@ -86,7 +86,7 @@ function xmldb_local_suap_upgrade($oldversion)
             $dbman->create_table($table);
         }
 
-        upgrade_plugin_savepoint(true, 20260127080, 'local', 'suap');
+        upgrade_plugin_savepoint(true, 20260130081, 'local', 'suap');
     }
 
     return local_suap_migrate($oldversion);
