@@ -389,8 +389,10 @@ class sync_up_enrolments_service extends service
     function sync_enrols()
     {
         $this->professor_enrol = $this->get_enrolment_config('teacher');
+        $this->formador_enrol = $this->get_enrolment_config('former');
         $this->tutor_enrol = $this->get_enrolment_config('assistant');
         $this->docente_enrol = $this->get_enrolment_config('instructor');
+        $this->mediador_enrol = $this->get_enrolment_config('moderator');
         $this->aluno_enrol = $this->get_enrolment_config('student');
     }
 
@@ -428,8 +430,14 @@ class sync_up_enrolments_service extends service
             foreach ($this->json->professores as $usuario) {
                 if ($this->isRoom) {
                     $enrol = $this->docente_enrol;
-                } elseif (in_array(strtolower($usuario->tipo), ['principal', 'formador'])) {
+                } elseif (strtolower($usuario->tipo) == 'principal') {
                     $enrol = $this->professor_enrol;
+                } elseif (strtolower($usuario->tipo) == 'formador') {
+                    $enrol = $this->formador_enrol;
+                } elseif (strtolower($usuario->tipo) == 'mediador') {
+                    $enrol = $this->mediador_enrol;
+                } elseif (strtolower($usuario->tipo) == 'tutor') {
+                    $enrol = $this->tutor_enrol;
                 } else {
                     $enrol = $this->tutor_enrol;
                 }
