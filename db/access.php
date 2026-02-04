@@ -16,5 +16,15 @@ $capabilities = array(
         'archetypes' => [
             'manager' => CAP_ALLOW
         ]
-    ]
+    ],
+
+    'local/suap:view_mooc_reports' => [
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+
+
 );
