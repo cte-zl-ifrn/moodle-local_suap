@@ -129,19 +129,19 @@ class sync_up_enrolments_service extends service
         $this->json = json_decode($jsonstring);
 
         if (!$this->json) {
-            throw new \Exception("Erro ao validar o JSON, favor corrigir.");
+            throw new \Exception("Erro ao decodificar o JSON, favor corrigir.");
         }
 
-        $schema = json_decode(file_get_contents($CFG->dirroot . '/local/suap/schemas/sync_up_enrolments.schema.json'));
-        $validation = \Jsv4\Validator::validate($this->json, $schema);
-        if (!\Jsv4\Validator::isValid($this->json, $schema)) {
-            $errors = "";
+        // $schema = json_decode(file_get_contents($CFG->dirroot . '/local/suap/schemas/sync_up_enrolments.schema.json'));
+        // $validation = \Jsv4\Validator::validate($this->json, $schema);
+        // if (!\Jsv4\Validator::isValid($this->json, $schema)) {
+        //     $errors = "";
 
-            foreach ($validation->errors as $error) {
-                $errors .= "{$error->message}";
-            }
-            throw new \Exception("Erro ao validar o JSON, favor corrigir." . $errors);
-        }
+        //     foreach ($validation->errors as $error) {
+        //         $errors .= "{$error->message}";
+        //     }
+        //     throw new \Exception("Erro ao validar o JSON, favor corrigir." . $errors);
+        // }
     }
 
     function sync_oauth_issuer()
