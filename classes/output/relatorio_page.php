@@ -36,6 +36,7 @@ class relatorio_page implements renderable, templatable {
         
         // Agrupar por curso
         $grouped_by_curso = [];
+        $course_counter = 0;
         
         foreach ($records as $record) {
             $curso_nome = $record->curso_nome;
@@ -58,6 +59,13 @@ class relatorio_page implements renderable, templatable {
             $campus_data = new stdClass();
             $campus_data->campus_nome = $record->campus;
             $campus_data->campus_id = clean_param($record->campus, PARAM_ALPHANUMEXT);
+
+            $campus_data->curso_url = (new \moodle_url(
+                '/course/view.php',
+                ['id' => $record->courseid]
+            ))->out(false);
+
+            $campus_data->curso_codigo = $record->curso_codigo;
             
             $campus_data->total_enrolled = $record->total_enrolled;
             $campus_data->accessed = $record->accessed;

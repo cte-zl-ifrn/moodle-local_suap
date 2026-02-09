@@ -89,5 +89,49 @@ function xmldb_local_suap_upgrade($oldversion)
         upgrade_plugin_savepoint(true, 20260130081, 'local', 'suap');
     }
 
+    if ($oldversion < 20260209085) {
+
+        $dbman = $DB->get_manager();
+
+        $table = new xmldb_table('local_suap_relatorio_cursos_autoinstrucionais');
+
+        // 1️⃣ Campo courseid
+        $field_courseid = new xmldb_field(
+            'courseid',
+            XMLDB_TYPE_INTEGER,
+            '10',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            '0',
+            'id'
+        );
+
+        if (!$dbman->field_exists($table, $field_courseid)) {
+            $dbman->add_field($table, $field_courseid);
+        }
+
+        // 2️⃣ Campo curso_codigo
+        $field_codigo = new xmldb_field(
+            'curso_codigo',
+            XMLDB_TYPE_CHAR,
+            '100',
+            null,
+            null,
+            null,
+            null,
+            'courseid'
+        );
+
+        if (!$dbman->field_exists($table, $field_codigo)) {
+            $dbman->add_field($table, $field_codigo);
+        }
+
+        // 🔥 Limpa snapshot antigo (não tem essas colunas)
+        $DB->delete_records('local_suap_relatorio_cursos_autoinstrucionais');
+
+        upgrade_plugin_savepoint(true, 20260209085, 'local', 'suap');
+    }
+
     return local_suap_migrate($oldversion);
 }

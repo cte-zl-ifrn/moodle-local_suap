@@ -21,20 +21,27 @@ class generate_report_task extends \core\task\scheduled_task {
         SELECT
             c.id,
             c.fullname AS curso_nome,
-            cfd_campus.value AS campus
+            cfd_campus.value AS campus,
+            cfd_codigo.value AS curso_codigo
         FROM {course} c
 
         JOIN {customfield_field} cff_diario
-        ON cff_diario.shortname = 'diario_tipo'
+          ON cff_diario.shortname = 'diario_tipo'
         JOIN {customfield_data} cfd_diario
-        ON cfd_diario.fieldid = cff_diario.id
+          ON cfd_diario.fieldid = cff_diario.id
         AND cfd_diario.instanceid = c.id
 
         LEFT JOIN {customfield_field} cff_campus
-        ON cff_campus.shortname = 'campus_descricao'
+          ON cff_campus.shortname = 'campus_descricao'
         LEFT JOIN {customfield_data} cfd_campus
-        ON cfd_campus.fieldid = cff_campus.id
+          ON cfd_campus.fieldid = cff_campus.id
         AND cfd_campus.instanceid = c.id
+
+        LEFT JOIN {customfield_field} cff_codigo
+          ON cff_codigo.shortname = 'curso_codigo'
+        LEFT JOIN {customfield_data} cfd_codigo
+          ON cfd_codigo.fieldid = cff_codigo.id
+        AND cfd_codigo.instanceid = c.id
 
         WHERE LOWER(cfd_diario.value) = 'minicurso'
         AND c.visible = 1
@@ -65,6 +72,8 @@ class generate_report_task extends \core\task\scheduled_task {
             if (!isset($grouped[$key])) {
                 $grouped[$key] = [
                     'curso_nome' => $curso_nome,
+                    'courseid' => $course->id,
+                    'curso_codigo' => $course->curso_codigo ?? null, 
                     'campus' => $campus,
                     'quantidade_cursos' => 0,
                     'totals' => (object)[
@@ -151,6 +160,8 @@ class generate_report_task extends \core\task\scheduled_task {
             mtrace("Salvando: Curso='{$data['curso_nome']}' | Campus='{$data['campus']}'");
 
             $record = (object)[
+                'courseid'     => $data['courseid'],
+                'curso_codigo' => $data['curso_codigo'],
                 'curso_nome' => $data['curso_nome'],
                 'campus' => $data['campus'],
                 'diario_tipo' => 'minicurso',

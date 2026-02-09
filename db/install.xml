@@ -11,6 +11,9 @@
 
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
 
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true"/>
+        <FIELD NAME="curso_codigo" TYPE="char" LENGTH="100" NOTNULL="false"/>
+
         <!-- Identificação lógica -->
         <FIELD NAME="curso_nome" TYPE="char" LENGTH="255" NOTNULL="true"/>
         <FIELD NAME="campus" TYPE="char" LENGTH="255" NOTNULL="true"/>

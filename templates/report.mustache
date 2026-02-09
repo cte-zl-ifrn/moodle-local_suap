@@ -30,6 +30,7 @@
                                     <thead class="thead-light">
                                         <tr>
                                             <th>Campus</th>
+                                            <th>Código do curso</th>
                                             <th>Total Inscritos</th>
                                             <th>Acessaram</th>
                                             <th>Nunca Acessaram</th>
@@ -48,8 +49,13 @@
                                     </thead>
                                     <tbody>
                                         {{#campus_list}}
-                                            <tr>
-                                                <td><strong>{{campus_nome}}</strong></td>
+                                            <tr>                        
+                                                <td>
+                                                    <a href="{{curso_url}}" target="_blank" title="Acessar curso">
+                                                        <strong>{{campus_nome}}</strong>
+                                                    </a>
+                                                </td>
+                                                <td>{{curso_codigo}}</td>
                                                 <td>{{total_enrolled}}</td>
                                                 <td>{{accessed}}</td>
                                                 <td>{{no_access}}</td>
