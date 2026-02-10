@@ -47,6 +47,13 @@ class relatorio_page implements renderable, templatable {
                 $grouped_by_curso[$curso_nome] = [
                     'curso_nome' => $curso_nome,
                     'curso_id' => 'curso-' . $course_counter,
+                    'export_url' => (new \moodle_url(
+                        '/local/suap/cursos/export.php',
+                        [
+                            'curso_nome'    => $curso_nome,
+                            'timegenerated' => $latest_time
+                        ]
+                    ))->out(false),
                     'campus_list' => []
                 ];
             }
