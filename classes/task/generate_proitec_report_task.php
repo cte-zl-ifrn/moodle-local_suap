@@ -125,5 +125,43 @@ class generate_proitec_report_task extends \core\task\scheduled_task {
         }
         unset($group, $courseinfo);
 
+        $timegenerated = time();
+
+        $DB->delete_records('local_suap_relatorio_proitec');
+
+        foreach ($groups as $group) {
+
+            foreach ($group['courses'] as $disciplina => $courseinfo) {
+
+                $m = $courseinfo['metrics'];
+
+                $record = (object)[
+                    'courseid'            => $courseinfo['courseid'],
+                    'ano_semestre'        => $group['ano_semestre'],
+                    'campus'              => $group['campus'],
+                    'disciplina'          => $disciplina,
+
+                    'total_enrolled'      => $m->total_enrolled,
+                    'accessed'            => $m->accessed,
+                    'no_access'           => $m->no_access,
+
+                    'final_exam_takers'   => $m->final_exam_takers,
+                    'passed'              => $m->passed,
+                    'failed'              => $m->failed,
+
+                    'avg_grade'           => $m->avg_grade,
+
+                    'with_certificate'    => $m->with_certificate,
+                    'without_certificate' => $m->without_certificate,
+                    'completed'           => $m->completed,
+
+                    'timegenerated'       => $timegenerated
+                ];
+
+                $DB->insert_record('local_suap_relatorio_proitec', $record);
+            }
+        }
+
+
     }
 }
