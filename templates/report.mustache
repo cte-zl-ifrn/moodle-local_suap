@@ -151,23 +151,45 @@
                     <table class="table table-striped table-bordered table-sm">
                         <thead class="thead-light">
                             <tr>
-                                <th>Ano/Semestre</th>
-                                <th>Campus</th>
                                 <th>Disciplina</th>
-                                <th>Total Inscritos</th>
+                                <th>Acessaram</th>
+                                <th>Nunca acessaram</th>
+                                <th>% Acesso</th>
+                                <th>Fizeram Avaliação Final</th>
+                                <th>% Fizeram Avaliação Final</th>
                                 <th>Aprovados</th>
+                                <th>Reprovados</th>
+                                <th>% Aprovados</th>
+                                <th>Nota Média</th>
+                                <th>Com Certificado</th>
+                                <th>Aptos sem Cert.</th>
                                 <th>Concluídos</th>
+                                <th>% Concluídos</th>
                             </tr>
                         </thead>
                         <tbody>
                             {{#proitec.records}}
                             <tr>
-                                <td>{{ano_semestre}}</td>
-                                <td>{{campus}}</td>
-                                <td>{{disciplina}}</td>
-                                <td>{{total_enrolled}}</td>
-                                <td>{{passed}}</td>
-                                <td>{{completed}}</td>
+                                <td><strong>{{disciplina}}</strong></td>
+
+                                <td>{{accessed}}</td>
+                                <td>{{no_access}}</td>
+                                <td>{{pct_accessed}}%</td>
+
+                                <td>{{final_exam_takers}}</td>
+                                <td>{{pct_exam_takers}}%</td>
+
+                                <td class="table-success">{{passed}}</td>
+                                <td class="table-danger">{{failed}}</td>
+                                <td>{{pct_passed}}%</td>
+
+                                <td>{{avg_grade}}</td>
+
+                                <td>{{with_certificate}}</td>
+                                <td>{{without_certificate}}</td>
+
+                                <td class="table-info">{{completed}}</td>
+                                <td>{{pct_completed}}%</td>
                             </tr>
                             {{/proitec.records}}
                         </tbody>

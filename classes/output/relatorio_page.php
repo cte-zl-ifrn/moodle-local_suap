@@ -150,6 +150,50 @@ class relatorio_page implements renderable, templatable {
             'ano_semestre, campus, disciplina'
         );
 
+        if (!$records) {
+            return null;
+        }
+
+        $rows = [];
+
+        foreach ($records as $r) {
+            $row = new \stdClass();
+
+            $total = $r->total_enrolled;
+            $exam  = $r->final_exam_takers;
+
+            $row->disciplina = ucfirst($r->disciplina);
+
+            $row->accessed   = $r->accessed;
+            $row->no_access  = $r->no_access;
+            $row->pct_accessed = $total > 0
+                ? round(($r->accessed / $total) * 100, 2)
+                : 0;
+
+            $row->final_exam_takers = $exam;
+            $row->pct_exam_takers   = $total > 0
+                ? round(($exam / $total) * 100, 2)
+                : 0;
+
+            $row->passed = $r->passed;
+            $row->failed = $r->failed;
+            $row->pct_passed = $exam > 0
+                ? round(($r->passed / $exam) * 100, 2)
+                : 0;
+
+            $row->avg_grade = number_format($r->avg_grade, 2, ',', '.');
+
+            $row->with_certificate    = $r->with_certificate;
+            $row->without_certificate = $r->without_certificate;
+
+            $row->completed = $r->completed;
+            $row->pct_completed = $total > 0
+                ? round(($r->completed / $total) * 100, 2)
+                : 0;
+
+            $rows[] = $row;
+        }
+
         return [
             'lastupdated' => userdate($latest_time, get_string('strftimedatetimeshort')),
             'records'     => array_values($records)
