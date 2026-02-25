@@ -147,54 +147,93 @@
                     Última atualização: {{proitec.lastupdated}}
                 </div>
 
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-sm">
+                {{#proitec.campi}}
+                <h4 class="mt-4 mb-2">{{campus}}</h4>
+
+                <div class="table-responsive mb-4">
+                    <table class="table table-bordered table-sm">
                         <thead class="thead-light">
                             <tr>
-                                <th>Disciplina</th>
-                                <th>Acessaram</th>
-                                <th>Nunca acessaram</th>
-                                <th>% Acesso</th>
-                                <th>Fizeram Avaliação Final</th>
-                                <th>% Fizeram Avaliação Final</th>
-                                <th>Aprovados</th>
-                                <th>Reprovados</th>
-                                <th>% Aprovados</th>
-                                <th>Nota Média</th>
-                                <th>Com Certificado</th>
-                                <th>Aptos sem Cert.</th>
+                                <th>Ano/Semestre</th>
+                                <th>Total Inscritos</th>
+                                <th>Nota média geral</th>
                                 <th>Concluídos</th>
-                                <th>% Concluídos</th>
+                                <th>% Conclusão</th>
+                                <th>Detalhar</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {{#proitec.records}}
+
+                        {{#semestres}}
                             <tr>
-                                <td><strong>{{disciplina}}</strong></td>
-
-                                <td>{{accessed}}</td>
-                                <td>{{no_access}}</td>
-                                <td>{{pct_accessed}}%</td>
-
-                                <td>{{final_exam_takers}}</td>
-                                <td>{{pct_exam_takers}}%</td>
-
-                                <td class="table-success">{{passed}}</td>
-                                <td class="table-danger">{{failed}}</td>
-                                <td>{{pct_passed}}%</td>
-
-                                <td>{{avg_grade}}</td>
-
-                                <td>{{with_certificate}}</td>
-                                <td>{{without_certificate}}</td>
-
-                                <td class="table-info">{{completed}}</td>
-                                <td>{{pct_completed}}%</td>
+                                <td><strong>{{ano_semestre}}</strong></td>
+                                <td>{{resumo.total_enrolled}}</td>
+                                <td>{{resumo.avg_grade_geral}}</td>
+                                <td>{{resumo.completed}}</td>
+                                <td>{{resumo.pct_completed}}%</td>
+                                <td class="text-center">
+                                    <button
+                                        class="btn btn-sm btn-outline-primary"
+                                        data-toggle="collapse"
+                                        data-target="#detalhe-{{id}}">
+                                        <i class="fa fa-search-plus"></i>
+                                    </button>
+                                </td>
                             </tr>
-                            {{/proitec.records}}
+
+                            <!-- Detalhe por disciplinas -->
+                            <tr class="collapse bg-light" id="detalhe-{{id}}">
+                                <td colspan="6" class="p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered table-sm mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Disciplina</th>
+                                                    <th>Acessaram</th>
+                                                    <th>Nunca acessaram</th>
+                                                    <th>% Acesso</th>
+                                                    <th>Fizeram Avaliação Final</th>
+                                                    <th>% Fizeram Avaliação</th>
+                                                    <th>Aprovados</th>
+                                                    <th>Reprovados</th>
+                                                    <th>% Aprovados</th>
+                                                    <th>Nota média</th>
+                                                    <th>Com certificado</th>
+                                                    <th>Aptos sem cert.</th>
+                                                    <th>Concluídos</th>
+                                                    <th>% Concluídos</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {{#disciplinas}}
+                                                <tr>
+                                                    <td><strong>{{disciplina}}</strong></td>
+                                                    <td>{{accessed}}</td>
+                                                    <td>{{no_access}}</td>
+                                                    <td>{{pct_accessed}}%</td>
+                                                    <td>{{final_exam_takers}}</td>
+                                                    <td>{{pct_exam_takers}}%</td>
+                                                    <td class="table-success">{{passed}}</td>
+                                                    <td class="table-danger">{{failed}}</td>
+                                                    <td>{{pct_passed}}%</td>
+                                                    <td>{{avg_grade}}</td>
+                                                    <td>{{with_certificate}}</td>
+                                                    <td>{{without_certificate}}</td>
+                                                    <td class="table-info">{{completed}}</td>
+                                                    <td>{{pct_completed}}%</td>
+                                                </tr>
+                                                {{/disciplinas}}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        {{/semestres}}
+
                         </tbody>
                     </table>
                 </div>
+                {{/proitec.campi}}
 
             </div>
             {{/has_proitec}}

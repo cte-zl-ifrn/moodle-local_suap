@@ -154,49 +154,113 @@ class relatorio_page implements renderable, templatable {
             return null;
         }
 
-        $rows = [];
+        $campi = [];
 
         foreach ($records as $r) {
-            $row = new \stdClass();
 
+            $campus = $r->campus;
+            $semkey = $r->ano_semestre;
+
+            // 🔹 Campus
+            if (!isset($campi[$campus])) {
+                $campi[$campus] = [
+                    'campus' => $campus,
+                    'semestres' => []
+                ];
+            }
+
+            // 🔹 Ano/Semestre
+            if (!isset($campi[$campus]['semestres'][$semkey])) {
+                $campi[$campus]['semestres'][$semkey] = [
+                    'id' => clean_param($semkey . '-' . $campus, PARAM_ALPHANUMEXT),
+                    'ano_semestre' => substr($semkey, 0, 4) . '.' . substr($semkey, 4, 1),
+
+                    // acumuladores para o resumo
+                    'total_enrolled' => $r->total_enrolled,
+                    'grade_sum' => 0,
+                    'grade_count' => 0,
+                    'completed' => 0,
+
+                    'disciplinas' => []
+                ];
+            }
+
+            // 🔹 Detalhe por disciplina
             $total = $r->total_enrolled;
             $exam  = $r->final_exam_takers;
 
-            $row->disciplina = ucfirst($r->disciplina);
+            $disciplina = [
+                'disciplina' => ucfirst($r->disciplina),
 
-            $row->accessed   = $r->accessed;
-            $row->no_access  = $r->no_access;
-            $row->pct_accessed = $total > 0
-                ? round(($r->accessed / $total) * 100, 2)
-                : 0;
+                'accessed' => $r->accessed,
+                'no_access' => $r->no_access,
+                'pct_accessed' => $total > 0 ? round(($r->accessed / $total) * 100, 2) : 0,
 
-            $row->final_exam_takers = $exam;
-            $row->pct_exam_takers   = $total > 0
-                ? round(($exam / $total) * 100, 2)
-                : 0;
+                'final_exam_takers' => $exam,
+                'pct_exam_takers' => $total > 0 ? round(($exam / $total) * 100, 2) : 0,
 
-            $row->passed = $r->passed;
-            $row->failed = $r->failed;
-            $row->pct_passed = $exam > 0
-                ? round(($r->passed / $exam) * 100, 2)
-                : 0;
+                'passed' => $r->passed,
+                'failed' => $r->failed,
+                'pct_passed' => $exam > 0 ? round(($r->passed / $exam) * 100, 2) : 0,
 
-            $row->avg_grade = number_format($r->avg_grade, 2, ',', '.');
+                'avg_grade' => number_format($r->avg_grade, 2, ',', '.'),
 
-            $row->with_certificate    = $r->with_certificate;
-            $row->without_certificate = $r->without_certificate;
+                'with_certificate' => $r->with_certificate,
+                'without_certificate' => $r->without_certificate,
 
-            $row->completed = $r->completed;
-            $row->pct_completed = $total > 0
-                ? round(($r->completed / $total) * 100, 2)
-                : 0;
+                'completed' => $r->completed,
+                'pct_completed' => $total > 0 ? round(($r->completed / $total) * 100, 2) : 0,
+            ];
 
-            $rows[] = $row;
+            $campi[$campus]['semestres'][$semkey]['disciplinas'][] = $disciplina;
+
+            // 🔹 Acumuladores do resumo
+            if ($exam > 0) {
+                $campi[$campus]['semestres'][$semkey]['grade_sum']
+                    += ($r->avg_grade * $exam);
+                $campi[$campus]['semestres'][$semkey]['grade_count']
+                    += $exam;
+            }
+
+            $campi[$campus]['semestres'][$semkey]['completed']
+                = max(
+                    $campi[$campus]['semestres'][$semkey]['completed'],
+                    $r->completed
+                );
+        }
+
+        // 🔹 Finalizar resumos
+        foreach ($campi as &$campus) {
+            foreach ($campus['semestres'] as &$sem) {
+
+                $avg = $sem['grade_count'] > 0
+                    ? round($sem['grade_sum'] / $sem['grade_count'], 2)
+                    : 0;
+
+                $sem['resumo'] = [
+                    'total_enrolled' => $sem['total_enrolled'],
+                    'avg_grade_geral' => number_format($avg, 2, ',', '.'),
+                    'completed' => $sem['completed'],
+                    'pct_completed' => $sem['total_enrolled'] > 0
+                        ? round(($sem['completed'] / $sem['total_enrolled']) * 100, 2)
+                        : 0,
+                ];
+
+                unset(
+                    $sem['grade_sum'],
+                    $sem['grade_count'],
+                    $sem['total_enrolled'],
+                    $sem['completed']
+                );
+            }
+
+            // manter semestres como array indexado (Mustache)
+            $campus['semestres'] = array_values($campus['semestres']);
         }
 
         return [
             'lastupdated' => userdate($latest_time, get_string('strftimedatetimeshort')),
-            'records'     => array_values($records)
+            'campi' => array_values($campi)
         ];
     }
 }
