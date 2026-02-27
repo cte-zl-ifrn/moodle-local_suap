@@ -10,6 +10,8 @@ $PAGE->set_context(context_system::instance());
 $PAGE->set_title(get_string('generate_report_task', 'local_suap'));
 $PAGE->set_heading(get_string('generate_report_task', 'local_suap'));
 
+$PAGE->requires->js_call_amd('local_suap/tables', 'init');
+
 echo $OUTPUT->header();
 
 // Criar o renderable que busca os dados

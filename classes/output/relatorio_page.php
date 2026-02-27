@@ -223,7 +223,7 @@ class relatorio_page implements renderable, templatable {
             }
 
             $campi[$campus]['semestres'][$semkey]['completed']
-                = max(
+                = min(
                     $campi[$campus]['semestres'][$semkey]['completed'],
                     $r->completed
                 );
