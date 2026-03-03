@@ -472,9 +472,26 @@ class sync_up_enrolments_service extends service
     }
 
 
+    function check_user_enrolments($courseid, $userid, $rolename, $enrolmethod)
+    {
+        global $DB;
+
+        $sql = "SELECT ue.id
+                FROM {user_enrolments} ue
+                JOIN {enrol} e ON e.id = ue.enrolid
+                JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.contextid = e.courseid
+                JOIN {role} r ON r.id = ra.roleid
+                WHERE e.courseid = ? AND ue.userid = ? AND r.shortname = ? AND e.enrol = ?";
+
+        $record = $DB->get_record_sql($sql, [$courseid, $userid, $rolename, $enrolmethod]);
+
+        return !empty($record);
+    }
+
+
     function sync_enrol($enrol, $usuario, $status)
     {
-        if (is_enrolled($this->context, $usuario->user)) {
+        if ($this->check_user_enrolments($this->course->id, $usuario->user->id, $enrol->roleid, $enrol->enrol->enrol)) {
             $enrol->enrol->update_user_enrol($enrol->instance, $usuario->user->id, $status);
         } else {
             $enrol->enrol->enrol_user($enrol->instance, $usuario->user->id, $enrol->roleid, time(), 0, $status);
