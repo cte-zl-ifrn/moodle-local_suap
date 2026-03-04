@@ -1,114 +1,255 @@
 <div class="local-suap-relatorio">
-    {{#hasdata}}
-        <div class="alert alert-info mb-4">
-            <i class="fa fa-clock-o"></i> Última atualização: {{lastupdated}}
-        </div>
 
-        <div class="accordion" id="accordion-cursos">
-            {{#cursos}}
-                <div class="card mb-2">
-                    <div class="card-header" id="heading-{{curso_id}}">
-                        <h2 class="mb-0">
-                            <button class="btn btn-link btn-block text-left collapsed d-flex justify-content-between align-items-center" 
-                                    type="button" 
-                                    data-toggle="collapse" 
-                                    data-target="#collapse-{{curso_id}}" 
-                                    aria-expanded="false" 
-                                    aria-controls="collapse-{{curso_id}}">
-                                <strong>{{curso_nome}}</strong>
-                                <i class="fa fa-chevron-down accordion-icon"></i>
-                            </button>
-                        </h2>
-                    </div>
-                    <div id="collapse-{{curso_id}}" 
-                         class="collapse" 
-                         aria-labelledby="heading-{{curso_id}}"
-                         data-parent="#accordion-cursos">
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-bordered table-sm mb-0">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th>Campus</th>
-                                            <th>Total Inscritos</th>
-                                            <th>Acessaram</th>
-                                            <th>Nunca Acessaram</th>
-                                            <th>% Acesso</th>
-                                            <th>Fizeram Avaliação Final</th>
-                                            <th>% Fizeram Avaliação Final</th>
-                                            <th>Aprovados</th>
-                                            <th>Reprovados</th>
-                                            <th>% Aprovados</th>
-                                            <th>Nota Média</th>
-                                            <th>Com Certificado</th>
-                                            <th>Aptos sem Cert.</th>
-                                            <th>Concluídos</th>
-                                            <th>% Concluídos</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {{#campus_list}}
-                                            <tr>
-                                                <td><strong>{{campus_nome}}</strong></td>
-                                                <td>{{total_enrolled}}</td>
-                                                <td>{{accessed}}</td>
-                                                <td>{{no_access}}</td>
-                                                <td>{{pct_accessed}}%</td>
-                                                <td>{{final_exam_takers}}</td>
-                                                <td>{{pct_exam_takers}}%</td>
-                                                <td class="table-success">{{passed}}</td>
-                                                <td class="table-danger">{{failed}}</td>
-                                                <td>{{pct_passed}}%</td>
-                                                <td>{{avg_grade}}</td>
-                                                <td>{{with_certificate}}</td>
-                                                <td>{{without_certificate}}</td>
-                                                <td class="table-info">{{completed}}</td>
-                                                <td>{{pct_completed}}%</td>
-                                            </tr>
-                                        {{/campus_list}}
-                                    </tbody>
-                                </table>
+    {{^nodata}}
+
+        <!-- Abas -->
+        <ul class="nav nav-tabs mb-3" id="relatorioTabs" role="tablist">
+            
+            {{#has_minicursos}}
+            <li class="nav-item">
+                <a class="nav-link active"
+                   id="minicursos-tab"
+                   data-toggle="tab"
+                   href="#minicursos"
+                   role="tab">
+                    Cursos Autoinstrucionais
+                </a>
+            </li>
+            {{/has_minicursos}}
+
+            {{#has_proitec}}
+            <li class="nav-item">
+                <a class="nav-link {{^has_minicursos}}active{{/has_minicursos}}"
+                   id="proitec-tab"
+                   data-toggle="tab"
+                   href="#proitec"
+                   role="tab">
+                    PROITEC
+                </a>
+            </li>
+            {{/has_proitec}}
+
+        </ul>
+
+        <div class="tab-content">
+
+            <!-- ============================= -->
+            <!-- ABA MINICURSOS -->
+            <!-- ============================= -->
+            {{#has_minicursos}}
+            <div class="tab-pane fade show active" id="minicursos" role="tabpanel">
+
+                <div class="alert alert-info mb-4">
+                    <i class="fa fa-clock-o"></i>
+                    Última atualização: {{minicursos.lastupdated}}
+                </div>
+
+                <div class="accordion" id="accordion-cursos">
+
+                    {{#minicursos.cursos}}
+                        <div class="card mb-2">
+
+                            <div class="card-header d-flex justify-content-between" id="heading-{{curso_id}}">
+                                <h2 class="mb-0 flex-grow-1">
+                                    <button class="btn btn-link btn-block text-left collapsed d-flex justify-content-between align-items-center"
+                                            type="button"
+                                            data-toggle="collapse"
+                                            data-target="#collapse-{{curso_id}}">
+                                        <strong>{{curso_nome}}</strong>
+                                        <i class="fa fa-chevron-down accordion-icon"></i>
+                                    </button>
+                                </h2>
+
+                                <a class="btn btn-outline-success ml-2"
+                                   href="{{export_url}}">
+                                    <i class="fa fa-file-excel-o"></i> Excel
+                                </a>
+                            </div>
+
+                            <div id="collapse-{{curso_id}}"
+                                 class="collapse"
+                                 data-parent="#accordion-cursos">
+
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+
+                                        <table class="table table-striped table-bordered table-sm mb-0">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th>Campus</th>
+                                                    <th>Código do curso</th>
+                                                    <th>Total Inscritos</th>
+                                                    <th>Acessaram</th>
+                                                    <th>Nunca Acessaram</th>
+                                                    <th>% Acesso</th>
+                                                    <th>Fizeram Avaliação Final</th>
+                                                    <th>% Fizeram Avaliação Final</th>
+                                                    <th>Aprovados</th>
+                                                    <th>Reprovados</th>
+                                                    <th>% Aprovados</th>
+                                                    <th>Nota Média</th>
+                                                    <th>Com Certificado</th>
+                                                    <th>Aptos sem Cert.</th>
+                                                    <th class='js-sort-completed' data-column="14">
+                                                        <span class="sort-indicator ms-1">⇅</span>
+                                                        Concluídos
+                                                    </th>
+                                                    <th>% Concluídos</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                {{#campus_list}}
+                                                <tr>
+                                                    <td>
+                                                        <a href="{{curso_url}}" target="_blank">
+                                                            <strong>{{campus_nome}}</strong>
+                                                        </a>
+                                                    </td>
+                                                    <td>{{curso_codigo}}</td>
+                                                    <td>{{total_enrolled}}</td>
+                                                    <td>{{accessed}}</td>
+                                                    <td>{{no_access}}</td>
+                                                    <td>{{pct_accessed}}%</td>
+                                                    <td>{{final_exam_takers}}</td>
+                                                    <td>{{pct_exam_takers}}%</td>
+                                                    <td class="table-success">{{passed}}</td>
+                                                    <td class="table-danger">{{failed}}</td>
+                                                    <td>{{pct_passed}}%</td>
+                                                    <td>{{avg_grade}}</td>
+                                                    <td>{{with_certificate}}</td>
+                                                    <td>{{without_certificate}}</td>
+                                                    <td class="table-info">{{completed}}</td>
+                                                    <td>{{pct_completed}}%</td>
+                                                </tr>
+                                                {{/campus_list}}
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    {{/minicursos.cursos}}
+
                 </div>
-            {{/cursos}}
-        </div>
-    {{/hasdata}}
+            </div>
+            {{/has_minicursos}}
 
-    {{^hasdata}}
+
+            <!-- ============================= -->
+            <!-- ABA PROITEC -->
+            <!-- ============================= -->
+            {{#has_proitec}}
+            <div class="tab-pane fade {{^has_minicursos}}show active{{/has_minicursos}}"
+                 id="proitec"
+                 role="tabpanel">
+
+                <div class="alert alert-info mb-4">
+                    <i class="fa fa-clock-o"></i>
+                    Última atualização: {{proitec.lastupdated}}
+                </div>
+
+                {{#proitec.campi}}
+                <h4 class="mt-4 mb-2">{{campus}}</h4>
+
+                <div class="table-responsive mb-4">
+                    <table class="table table-bordered table-sm">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Ano/Semestre</th>
+                                <th>Total Inscritos</th>
+                                <th>Nota média geral</th>
+                                <th>Concluídos</th>
+                                <th>% Conclusão</th>
+                                <th>Detalhar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        {{#semestres}}
+                            <tr>
+                                <td><strong>{{ano_semestre}}</strong></td>
+                                <td>{{resumo.total_enrolled}}</td>
+                                <td>{{resumo.avg_grade_geral}}</td>
+                                <td>{{resumo.completed}}</td>
+                                <td>{{resumo.pct_completed}}%</td>
+                                <td class="text-center">
+                                    <button
+                                        class="btn btn-sm btn-outline-primary"
+                                        data-toggle="collapse"
+                                        data-target="#detalhe-{{id}}">
+                                        <i class="fa fa-search-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Detalhe por disciplinas -->
+                            <tr class="collapse bg-light" id="detalhe-{{id}}">
+                                <td colspan="6" class="p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered table-sm mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Disciplina</th>
+                                                    <th>Acessaram</th>
+                                                    <th>Nunca acessaram</th>
+                                                    <th>% Acesso</th>
+                                                    <th>Fizeram Avaliação Final</th>
+                                                    <th>% Fizeram Avaliação</th>
+                                                    <th>Aprovados</th>
+                                                    <th>Reprovados</th>
+                                                    <th>% Aprovados</th>
+                                                    <th>Nota média</th>
+                                                    <th>Com certificado</th>
+                                                    <th>Aptos sem cert.</th>
+                                                    <th>Concluídos</th>
+                                                    <th>% Concluídos</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {{#disciplinas}}
+                                                <tr>
+                                                    <td><strong>{{disciplina}}</strong></td>
+                                                    <td>{{accessed}}</td>
+                                                    <td>{{no_access}}</td>
+                                                    <td>{{pct_accessed}}%</td>
+                                                    <td>{{final_exam_takers}}</td>
+                                                    <td>{{pct_exam_takers}}%</td>
+                                                    <td class="table-success">{{passed}}</td>
+                                                    <td class="table-danger">{{failed}}</td>
+                                                    <td>{{pct_passed}}%</td>
+                                                    <td>{{avg_grade}}</td>
+                                                    <td>{{with_certificate}}</td>
+                                                    <td>{{without_certificate}}</td>
+                                                    <td class="table-info">{{completed}}</td>
+                                                    <td>{{pct_completed}}%</td>
+                                                </tr>
+                                                {{/disciplinas}}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        {{/semestres}}
+
+                        </tbody>
+                    </table>
+                </div>
+                {{/proitec.campi}}
+
+            </div>
+            {{/has_proitec}}
+
+        </div>
+
+    {{/nodata}}
+
+    {{#nodata}}
         <div class="alert alert-warning">
-            <i class="fa fa-exclamation-triangle"></i> {{nodatamessage}}
+            <i class="fa fa-exclamation-triangle"></i>
+            {{nodatamessage}}
         </div>
-    {{/hasdata}}
+    {{/nodata}}
+
 </div>
-
-<style>
-/* Ícone do accordion */
-.local-suap-relatorio .accordion-icon {
-    transition: transform 0.3s ease;
-    font-size: 0.9rem;
-    color: #666;
-}
-
-/* Quando o accordion está aberto (botão sem classe collapsed) */
-.local-suap-relatorio .card-header button:not(.collapsed) .accordion-icon {
-    transform: rotate(180deg);
-}
-
-/* Primeira coluna */
-.local-suap-relatorio .table th:nth-child(1),
-.local-suap-relatorio .table td:nth-child(1) {
-    position: sticky;
-    left: 0;
-    z-index: 10;
-    background-color: #fff;
-    font-weight: 600;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.local-suap-relatorio .table th:nth-child(1) {
-    background-color: #f8f9fa;
-    z-index: 11;
-}
-</style>

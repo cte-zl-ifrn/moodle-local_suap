@@ -118,7 +118,8 @@ $string["default_moderator_enrol_type_desc"] = 'Normally manual. Why? Because ne
 # Task
 $string["sync_up_enrolments_task"] = 'Sync Up Enrolments Task';
 $string["sync_up_enrolments_task_desc"] = 'Sync Up Enrolments Task';
-$string["generate_report_task"] = 'Enviar relatório de inscrições por campus';
+$string["generate_report_task"] = 'Report of courses';
+$string['generate_proitec_report_task'] = 'PROITEC Report';
 
 # Notas
 $string["notes_to_sync_header"] = 'Sincronização de notas';
