@@ -52,7 +52,9 @@ try {
         'sync_user_preference',
         'sync_up_enrolments',
         // 'sync_down_attendances',
-        'sync_down_grades'
+        'sync_down_grades',
+
+        'enrol_course',
     ];
     $params = explode('&', $_SERVER["QUERY_STRING"]);
     $service_name = $params[0];
