@@ -47,11 +47,28 @@ function suap_bulk_course_custom_field()
     \local_suap\save_course_custom_field($cid, 'curso_descricao', 'Descrição do curso');
     \local_suap\save_course_custom_field($cid, 'curso_nome', 'Nome do curso');
     \local_suap\save_course_custom_field($cid, 'curso_sala_coordenacao', 'É sala de coordenação');
+    \local_suap\save_course_custom_field($cid, 'curso_titulo_certificado_masculino', 'Título do certificado masculino');
+    \local_suap\save_course_custom_field($cid, 'curso_titulo_certificado_feminino', 'Título do certificado feminino');
+    \local_suap\save_course_custom_field($cid, 'curso_ch_total', 'Carga horária total do curso');
+    \local_suap\save_course_custom_field($cid, 'curso_ch_aula', 'Carga horária da aula');
+    \local_suap\save_course_custom_field($cid, 'curso_conteudo', 'Conteúdo do curso');
+    \local_suap\save_course_custom_field($cid, 'curso_autoinstrucional', 'Curso é autoinstrucional', 'checkbox');
+    \local_suap\save_course_custom_field($cid, 'curso_autoinscricao', 'Curso aceita autoinscrição', 'checkbox');
+    \local_suap\save_course_custom_field($cid, 'curso_modalidade_id', 'ID da modalidade do curso');
+    \local_suap\save_course_custom_field($cid, 'curso_modalidade_descricao', 'Descrição da modalidade do curso');
+    \local_suap\save_course_custom_field($cid, 'curso_nivel_ensino_id', 'ID do nível de ensino do curso');
+    \local_suap\save_course_custom_field($cid, 'curso_nivel_ensino_descricao', 'Descrição do nível de ensino do curso');
+    \local_suap\save_course_custom_field($cid, 'curso_programa', 'Programa do curso');
 
     \local_suap\save_course_custom_field($cid, 'turma_id', 'ID da turma');
     \local_suap\save_course_custom_field($cid, 'turma_codigo', 'Código da turma');
-
     \local_suap\save_course_custom_field($cid, 'turma_ano_periodo', 'Ano/Semestre da turma');
+    \local_suap\save_course_custom_field($cid, 'turma_data_inicio', 'Data de início da turma');
+    \local_suap\save_course_custom_field($cid, 'turma_data_fim', 'Data de fim da turma');
+    \local_suap\save_course_custom_field($cid, 'turma_gerar_matricula', 'Gerar matrícula na turma', 'checkbox');
+    \local_suap\save_course_custom_field($cid, 'turma_nota_minima', 'Nota mínima da turma');
+    \local_suap\save_course_custom_field($cid, 'completude_minima', 'Completude mínima da turma');
+
 
     \local_suap\save_course_custom_field($cid, 'diario_id', 'ID do diário');
     \local_suap\save_course_custom_field($cid, 'diario_tipo', 'Tipo de diário');
@@ -65,6 +82,14 @@ function suap_bulk_course_custom_field()
     \local_suap\save_course_custom_field($cid, 'disciplina_tipo', 'Tipo da disciplina');
     \local_suap\save_course_custom_field($cid, 'disciplina_optativo', 'Optativo da disciplina');
     \local_suap\save_course_custom_field($cid, 'disciplina_qtd_avaliacoes', 'Quantidade de avaliações da disciplina');
+    \local_suap\save_course_custom_field($cid, 'disciplina_is_seminario_estagio_docente', 'É disciplina de seminário ou estágio docente', 'checkbox');
+    \local_suap\save_course_custom_field($cid, 'disciplina_ch_presencial', 'Carga horária presencial da disciplina');
+    \local_suap\save_course_custom_field($cid, 'disciplina_ch_pratica', 'Carga horária prática da disciplina');
+    \local_suap\save_course_custom_field($cid, 'disciplina_ch_extensao', 'Carga horária de extensão da disciplina');
+    \local_suap\save_course_custom_field($cid, 'disciplina_ch_pcc', 'Carga horária de PCC da disciplina');
+    \local_suap\save_course_custom_field($cid, 'disciplina_ch_visita_tecnica', 'Carga horária de visita técnica da disciplina');
+    \local_suap\save_course_custom_field($cid, 'disciplina_ch_semanal_1s', 'Carga horária semanal do 1º semestre da disciplina');
+    \local_suap\save_course_custom_field($cid, 'disciplina_ch_semanal_2s', 'Carga horária semanal do 2º semestre da disciplina');
 
     \local_suap\save_course_custom_field($cid, 'carga_horaria', 'Carga horária');
     \local_suap\save_course_custom_field($cid, 'tem_certificado', 'Tem certificado', 'checkbox');
@@ -111,6 +136,7 @@ function suap_bulk_user_custom_field()
 
     \local_suap\save_user_custom_field($cid, 'polo_id', 'ID do pólo');
     \local_suap\save_user_custom_field($cid, 'polo_nome', 'Nome do pólo');
+    \local_suap\save_user_custom_field($cid, 'polo_sigla', 'Sigla do pólo');
 
     \local_suap\save_user_custom_field($cid, 'ingresso_periodo', 'Período de ingresso');
 

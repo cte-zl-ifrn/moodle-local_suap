@@ -210,8 +210,8 @@ class sync_up_enrolments_service extends service
 
         $username = strtolower($usuario->isAluno ? $usuario->matricula : $usuario->login);
         $email = !empty($usuario->email) ? $usuario->email : $usuario->email_secundario;
-        $status = strtolower($usuario->isAluno ? $usuario->situacao : $usuario->status);
-        $suspended = $status == 'ativo' ? 0 : 1;
+        $status = $usuario->ativo ?? $usuario->situacao ?? $usuario->status ?? null;
+        $suspended = in_array(strtolower($status), ['ativo', 'true']) ? 0 : 1;
 
         $nome_parts = explode(' ', $usuario->nome);
         $firstname = implode(' ', array_slice($nome_parts, 0, -1));

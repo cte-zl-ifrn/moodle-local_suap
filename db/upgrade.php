@@ -89,5 +89,32 @@ function xmldb_local_suap_upgrade($oldversion)
         upgrade_plugin_savepoint(true, 20260130081, 'local', 'suap');
     }
 
+    if ($oldversion < 20260206084) {
+
+        $dbman = $DB->get_manager();
+
+        $table = new xmldb_table('local_suap_restricoes_autoinscricao');
+
+        if (!$dbman->table_exists($table)) {
+
+            $table->add_field('id',             XMLDB_TYPE_INTEGER, '10',   null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
+
+            $table->add_field('courseid',       XMLDB_TYPE_INTEGER, '10',   null, XMLDB_NOTNULL);
+            $table->add_field('chave',          XMLDB_TYPE_CHAR,    '255',  null, XMLDB_NOTNULL);
+            $table->add_field('restricao',      XMLDB_TYPE_CHAR,    '255',  null, XMLDB_NOTNULL);
+            $table->add_field('descricao',      XMLDB_TYPE_TEXT,    null,   null);
+            $table->add_field('timecreated',    XMLDB_TYPE_INTEGER, '10',   null, XMLDB_NOTNULL);
+
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
+            $table->add_index('idx_courseid',   XMLDB_INDEX_NOTUNIQUE, ['courseid']);
+            $table->add_index('idx_chave',      XMLDB_INDEX_NOTUNIQUE, ['chave']);
+
+            $dbman->create_table($table);
+        }
+
+        upgrade_plugin_savepoint(true, 20260325090, 'local', 'suap');
+    }
+
     return local_suap_migrate($oldversion);
 }

@@ -15,24 +15,23 @@
         <FIELD NAME="curso_nome" TYPE="char" LENGTH="255" NOTNULL="true"/>
         <FIELD NAME="campus" TYPE="char" LENGTH="255" NOTNULL="true"/>
 
-        <FIELD NAME="diario_tipo" TYPE="char" LENGTH="50" NOTNULL="true"/>
-        <FIELD NAME="quantidade_cursos" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="1"/>
+        <FIELD NAME="diario_tipo"         TYPE="char" LENGTH="50" NOTNULL="true"/>
+        <FIELD NAME="quantidade_cursos"   TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="1"/>
 
         <!-- Métricas -->
-        <FIELD NAME="total_enrolled" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
-        <FIELD NAME="accessed" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
-        <FIELD NAME="no_access" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="total_enrolled"      TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="accessed"            TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="no_access"           TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0"/>
 
-        <FIELD NAME="final_exam_takers" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
-        <FIELD NAME="passed" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
-        <FIELD NAME="failed" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="final_exam_takers"   TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="passed"              TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="failed"              TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0"/>
 
-        <FIELD NAME="avg_grade" TYPE="number" LENGTH="10" DECIMALS="2"
-               NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="avg_grade"           TYPE="number" LENGTH="10" DECIMALS="2"  NOTNULL="true" DEFAULT="0"/>
 
-        <FIELD NAME="with_certificate" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
-        <FIELD NAME="without_certificate" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
-        <FIELD NAME="completed" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="with_certificate"    TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="without_certificate" TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="completed"           TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0"/>
 
         <!-- Controle -->
         <FIELD NAME="timegenerated" TYPE="int" LENGTH="10" NOTNULL="true"/>
@@ -44,12 +43,32 @@
       </KEYS>
 
       <INDEXES>
-        <INDEX NAME="idx_curso_nome" UNIQUE="false" FIELDS="curso_nome"/>
-        <INDEX NAME="idx_campus" UNIQUE="false" FIELDS="campus"/>
-        <INDEX NAME="idx_diario_tipo" UNIQUE="false" FIELDS="diario_tipo"/>
+        <INDEX NAME="idx_curso_nome"    UNIQUE="false" FIELDS="curso_nome"/>
+        <INDEX NAME="idx_campus"        UNIQUE="false" FIELDS="campus"/>
+        <INDEX NAME="idx_diario_tipo"   UNIQUE="false" FIELDS="diario_tipo"/>
         <INDEX NAME="idx_timegenerated" UNIQUE="false" FIELDS="timegenerated"/>
       </INDEXES>
 
+    </TABLE>
+
+    <TABLE NAME="local_suap_restricoes_autoinscricao" COMMENT="Snapshot de restrições de autoinscrição em minicursos">
+      <FIELDS>
+        <FIELD NAME="id"            TYPE="int"  LENGTH="10"     NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid"      TYPE="int"  LENGTH="10"     NOTNULL="true"/>
+        <FIELD NAME="chave"         TYPE="char" LENGTH="255"    NOTNULL="true"/>
+        <FIELD NAME="restricao"     TYPE="char" LENGTH="255"    NOTNULL="true"/>
+        <FIELD NAME="descricao"     TYPE="text"/>
+        <FIELD NAME="timecreated"   TYPE="int"  LENGTH="10"     NOTNULL="true"/>
+      </FIELDS>
+
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+
+      <INDEXES>
+        <INDEX NAME="idx_courseid"  UNIQUE="false" FIELDS="courseid"  />
+        <INDEX NAME="idx_chave"     UNIQUE="false" FIELDS="chave"     />
+      </INDEXES>
     </TABLE>
 
   </TABLES>
