@@ -13,6 +13,7 @@
 
 namespace local_suap;
 
+require_once('../locallib.php');
 
 class service {
 

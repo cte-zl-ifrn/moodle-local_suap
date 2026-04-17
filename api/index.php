@@ -42,6 +42,8 @@ try {
     set_exception_handler('\local_suap\exception_handler');
     
     $whitelist = [
+        'health',
+
         'get_diarios',
         'get_atualizacoes_counts',
 
