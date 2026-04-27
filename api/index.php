@@ -24,7 +24,7 @@ function exception_handler($exception) {
     */
     $error_code = $exception->getCode() ?: 500;
     http_response_code($error_code);
-    die(json_encode(["error"=>["message"=>$exception->getMessage(), "code"=>$error_code]]));
+    die(json_encode(["error"=>["message"=>$exception->getMessage(), "code"=>$error_code, "source"=>'LS']]));
 }
 
 try {

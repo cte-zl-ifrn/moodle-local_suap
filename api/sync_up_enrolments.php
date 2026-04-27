@@ -22,8 +22,12 @@ require_once($CFG->dirroot . '/local/suap/classes/Jsv4/Validator.php');
 require_once($CFG->dirroot . '/local/suap/api/servicelib.php');
 
 
-class sync_up_enrolments_service extends service
-{
+function getattr($obj, $prop, $default = '') {
+    $result = property_exists($obj, $prop) ? $obj->$prop : $default;
+    return $result !== null ? $result : $default;
+};
+
+class sync_up_enrolments_service extends service {
 
     private $json;
     private $suapIssuer;
@@ -48,16 +52,14 @@ class sync_up_enrolments_service extends service
     private $roles_not_found = [];
 
 
-    function do_call()
-    {
+    function do_call() {
         $jsonstring = file_get_contents('php://input');
         $result = $this->process($jsonstring, false);
         $this->insertSyncDB($jsonstring);
         return $result;
     }
 
-    function insertSyncDB($jsonstring)
-    {
+    function insertSyncDB($jsonstring) {
         global $DB;
 
         $DB->insert_record(
@@ -70,8 +72,7 @@ class sync_up_enrolments_service extends service
         );
     }
 
-    function process($jsonstring, $inBackground)
-    {
+    function process($jsonstring, $inBackground) {
         global $CFG;
         $prefix = "{$CFG->wwwroot}/course/view.php";
 
@@ -95,35 +96,34 @@ class sync_up_enrolments_service extends service
         $this->isRoom = false;
         $this->sync_course($this->turmaCategory->id);
         $this->diario = $this->course;
-        if ($inBackground) {
-            $this->sync_enrols();
-            $this->sync_docentes_enrol();
-            $this->sync_discentes_enrol();
-            $this->sync_groups();
-            $this->sync_cohorts();
-        }
+        // if ($inBackground) {
+        //     $this->sync_enrols();
+        //     $this->sync_docentes_enrol();
+        //     $this->sync_discentes_enrol();
+        //     $this->sync_groups();
+        //     $this->sync_cohorts();
+        // }
 
         $this->isRoom = true;
         $this->sync_course($this->cursoCategory->id);
         $this->coordenacao = $this->course;
-        if ($inBackground) {
-            $this->sync_enrols();
-            $this->sync_docentes_enrol();
-            $this->sync_discentes_enrol();
-            $this->sync_groups();
-            $this->sync_cohorts();
-        }
+        // if ($inBackground) {
+        //     $this->sync_enrols();
+        //     $this->sync_docentes_enrol();
+        //     $this->sync_discentes_enrol();
+        //     $this->sync_groups();
+        //     $this->sync_cohorts();
+        // }
 
         return [
             "url" => "$prefix?id={$this->diario->id}",
-            "url_sala_coordenacao" => "$prefix?id={$this->coordenacao->id}",
+            // "url_sala_coordenacao" => "$prefix?id={$this->coordenacao->id}",
             "roles_not_found" => $this->roles_not_found
         ];
     }
 
 
-    function validate_json($jsonstring)
-    {
+    function validate_json($jsonstring) {
         global $CFG;
 
         $this->json = json_decode($jsonstring);
@@ -144,8 +144,7 @@ class sync_up_enrolments_service extends service
         // }
     }
 
-    function sync_oauth_issuer()
-    {
+    function sync_oauth_issuer() {
         $this->suapIssuer = create_or_update(
             'oauth2_issuer',
             [
@@ -178,8 +177,7 @@ class sync_up_enrolments_service extends service
     }
 
 
-    function sync_auths()
-    {
+    function sync_auths() {
         global $DB;
 
         $this->studentAuth = config('default_student_auth');
@@ -189,8 +187,7 @@ class sync_up_enrolments_service extends service
     }
 
 
-    function sync_users()
-    {
+    function sync_users() {
         global $CFG, $DB;
 
         $professores = isset($this->json->professores) ? $this->json->professores : [];
@@ -204,8 +201,7 @@ class sync_up_enrolments_service extends service
     }
 
 
-    function sync_user($usuario)
-    {
+    function sync_user($usuario) {
         global $DB;
 
         $username = strtolower($usuario->isAluno ? $usuario->matricula : $usuario->login);
@@ -250,19 +246,32 @@ class sync_up_enrolments_service extends service
             $custom_fields = [
                 'programa_nome' => isset($usuario->programa) ? $usuario->programa : "Institucional",
                 'curso_descricao' => $this->json->curso->nome,
-                'curso_codigo' => $this->json->curso->codigo
+                'curso_codigo' => $this->json->curso->codigo,
+                'nome_usual' => $this->json->usuario->nome_usual,
+                'nome_social' => $this->json->usuario->nome_social,
+                'nome_registro' => $this->json->usuario->nome_registro,
+                'cpf' => $this->json->usuario->cpf,
+                'passaporte' => $this->json->usuario->passaporte,
+                'outras_matriculas' => $this->json->usuario->outras_matriculas,
+                'eh_servidor' => $this->json->usuario->eh_servidor,
+                'eh_aluno' => $this->json->usuario->eh_aluno,
+                'eh_prestador' => $this->json->usuario->eh_prestador,
+                'eh_usuarioexterno' => $this->json->usuario->eh_usuarioexterno,
+                'eh_docente' => $this->json->usuario->eh_docente,
+                'eh_tecnico_administrativo' => $this->json->usuario->eh_tecnico_administrativo,
+                'eh_estrangeiro' => $this->json->usuario->eh_estrangeiro,
             ];
             if (property_exists($usuario, 'polo')) {
                 $custom_fields['polo_id'] = property_exists($usuario->polo, 'id') ? $usuario->polo->id : null;
                 $custom_fields['polo_nome'] = property_exists($usuario->polo, 'descricao') ? $usuario->polo->descricao : null;
+                $custom_fields['polo_sigla'] = property_exists($usuario->polo, 'sigla') ? $usuario->polo->sigla : null;
             }
             \profile_save_custom_fields($usuario->user->id, $custom_fields);
         }
     }
 
 
-    function sync_categories()
-    {
+    function sync_categories() {
         $this->diarioCategory = $this->sync_category(
             config('top_category_idnumber') ?: 'diarios',
             config('top_category_name') ?: 'Diários',
@@ -296,8 +305,7 @@ class sync_up_enrolments_service extends service
     }
 
 
-    function sync_category($idnumber, $name, $parent)
-    {
+    function sync_category($idnumber, $name, $parent) {
         global $DB;
 
         $category = $DB->get_record('course_categories', ['idnumber' => $idnumber]);
@@ -308,9 +316,18 @@ class sync_up_enrolments_service extends service
         return $category;
     }
 
+    function get_sala_tipo() {
+        return match (true) {
+            $this->isRoom => 'coordenacoes',
+            getattr($this->json->curso, 'autoinscricao', false) => 'autoinscricoes',
+            getattr($this->json->curso, 'praticas', false) => 'praticas',
+            getattr($this->json->curso, 'modelos', false) => 'modelos',
+            default => 'diario',
+        };
+    }
 
-    function sync_course($categoryid)
-    {
+
+    function sync_course($categoryid) {
         global $DB;
 
         $course_code = $this->isRoom ? "{$this->json->campus->sigla}.{$this->json->curso->codigo}" : "{$this->json->turma->codigo}.{$this->json->componente->sigla}";
@@ -320,65 +337,103 @@ class sync_up_enrolments_service extends service
             $this->course = $DB->get_record('course', ['shortname' => $course_code_long]) ?: $DB->get_record('course', ['shortname' => $course_code]);
         }
 
+        $modalidade = getattr($this->json->curso, 'modalidade', (object)[]);
+        $nivelensino = getattr($this->json->curso, 'nivel_ensino', (object)[]);
+
+        // var_export(getattr($this->json->curso, 'titulo_certificado_masculino', ''));
+        // die();
+
+        $data = [
+            "category" => $categoryid,
+            "fullname" => $this->isRoom ? "Sala de coordenação do curso {$this->json->curso->nome}" : $this->json->componente->descricao,
+            "shortname" => $course_code_long,
+            "idnumber" => $course_code_long,
+
+            /* Fixo */
+            "customfield_curso_sala_coordenacao" => $this->isRoom ? 'Sim' : 'Não',
+            "visible" => 0,
+            "enablecompletion" => 1,
+            // "startdate"=>time(),
+            "showreports" => 1,
+            "completionnotify" => 1,
+
+            /* Obrigatório - Painel AVA */
+            "customfield_sala_tipo" => $this->get_sala_tipo(),
+
+            /* Obrigatórios - Campus */
+            "customfield_campus_id" => $this->json->campus->id,
+            "customfield_campus_sigla" => $this->json->campus->sigla,
+            "customfield_campus_descricao" => $this->json->campus->descricao,
+
+            /* Obrigatórios - Curso */
+            "customfield_curso_id" => $this->json->curso->id,
+            "customfield_curso_codigo" => $this->json->curso->codigo,
+            "customfield_curso_nome" => $this->json->curso->nome,
+
+            /* Opcionais - Curso */
+            "customfield_curso_descricao" => getattr($this->json->curso, 'descricao', ''),
+            "customfield_curso_descricao_historico" => getattr($this->json->curso, 'descricao_historico', ''),
+            "customfield_curso_titulo_certificado_masculino" => getattr($this->json->curso, 'titulo_certificado_masculino', ''),
+            "customfield_curso_titulo_certificado_feminino" => getattr($this->json->curso, 'titulo_certificado_feminino', ''),
+            "customfield_curso_ch_total" => getattr($this->json->curso, 'ch_total', ''),
+            "customfield_curso_ch_aula" => getattr($this->json->curso, 'ch_aula', ''),
+            "customfield_curso_curso_conteudo" => getattr($this->json->curso, 'conteudo', ''),
+            "customfield_curso_autoinstrucional" => getattr($this->json->curso, 'autoinstrucional', ''),
+            "customfield_curso_autoinscricao" => getattr($this->json->curso, 'autoinscricao', ''),
+            "customfield_curso_modalidade_id" => getattr($modalidade, 'id', ''),
+            "customfield_curso_modalidade_descricao" => getattr($modalidade, 'descricao', ''),
+            "customfield_curso_nivel_ensino_id" => getattr($nivelensino, 'id', ''),
+            "customfield_curso_nivel_ensino_descricao" => getattr($nivelensino, 'descricao', ''),
+            "customfield_curso_programa" => getattr($this->json->curso, 'programa', ''),
+            "customfield_curso_restricoes" => json_encode(getattr($this->json->curso, 'restricoes', [])),
+
+            /* Obrigatórios - Turma */
+            "customfield_turma_id" => !$this->isRoom ? getattr($this->json->turma, 'id', '') : null,
+            "customfield_turma_codigo" => !$this->isRoom ? getattr($this->json->turma, 'codigo', '') : null,
+
+            /* Opcionais - Turma */
+            "customfield_turma_ano_periodo" => !$this->isRoom ? substr(getattr($this->json->turma, 'codigo'), 0, 4) . "." . substr(getattr($this->json->turma, 'codigo'), 4, 1) : null,
+            "customfield_turma_data_inicio" => !$this->isRoom ? getattr($this->json->turma, 'data_inicio', '') : null,
+            "customfield_turma_data_fim" => !$this->isRoom ? getattr($this->json->turma, 'data_fim', '') : null,
+            "customfield_turma_gerar_matricula" => !$this->isRoom ? getattr($this->json->turma, 'gerar_matricula', '') : null,
+            "customfield_turma_nota_minima" => !$this->isRoom ? getattr($this->json->turma, 'nota_minima', '') : null,
+            "customfield_turma_completude_minima" => !$this->isRoom ? getattr($this->json->turma, 'completude_minima', '') : null,
+            "customfield_turma_modelo_padrao" => !$this->isRoom ? getattr($this->json->turma, 'modelo_padrao', '') : null,
+
+            /* Obrigatórios - Componente Curricular */
+            "customfield_disciplina_id" => !$this->isRoom ? getattr($this->json->componente, 'id', '') : null,
+            "customfield_disciplina_sigla" => !$this->isRoom ? getattr($this->json->componente, 'sigla', '') : null,
+            "customfield_disciplina_descricao" => !$this->isRoom ? getattr($this->json->componente, 'descricao', '') : null,
+
+            /* Opcionais - Componente Curricular */
+            "customfield_disciplina_descricao_historico" => !$this->isRoom ? getattr($this->json->componente, 'descricao_historico', '') : null,
+            "customfield_disciplina_periodo" => !$this->isRoom ? getattr($this->json->componente, 'disciplina_periodo', '') : null,
+            "customfield_disciplina_tipo" => !$this->isRoom ? getattr($this->json->componente, 'tipo', '') : null,
+            "customfield_disciplina_optativo" => !$this->isRoom ? getattr($this->json->componente, 'optativo', '') : null,
+            "customfield_disciplina_qtd_avaliacoes" => !$this->isRoom ? getattr($this->json->componente, 'qtd_avaliacoes', '') : null,
+            "customfield_disciplina_is_seminario_estagio_docente" => !$this->isRoom ? getattr($this->json->componente, 'is_seminario_estagio_docente', '') : null,
+            "customfield_disciplina_ch_presencial" => !$this->isRoom ? getattr($this->json->componente, 'ch_presencial', '') : null,
+            "customfield_disciplina_ch_pratica" => !$this->isRoom ? getattr($this->json->componente, 'ch_pratica', '') : null,
+            "customfield_disciplina_ch_extensao" => !$this->isRoom ? getattr($this->json->componente, 'ch_extensao', '') : null,
+            "customfield_disciplina_ch_pcc" => !$this->isRoom ? getattr($this->json->componente, 'ch_pcc', '') : null,
+            "customfield_disciplina_ch_visita_tecnica" => !$this->isRoom ? getattr($this->json->componente, 'ch_visita_tecnica', '') : null,
+            "customfield_disciplina_ch_semanal_1s" => !$this->isRoom ? getattr($this->json->componente, 'ch_semanal_1s', '') : null,
+            "customfield_disciplina_ch_semanal_2s" => !$this->isRoom ? getattr($this->json->componente, 'ch_semanal_2s', '') : null,
+
+            // /* Obrigatórios - Diário */
+            "customfield_diario_id" => !$this->isRoom ? getattr($this->json->diario, 'id', '') : null,
+            "customfield_diario_tipo" => !$this->isRoom ? getattr($this->json->diario, 'tipo', '') : null,
+
+            /* Opcionais - Diário */
+            "customfield_diario_situacao" => !$this->isRoom ? getattr($this->json->diario, 'situacao', '') : null,
+            "customfield_diario_descricao" => !$this->isRoom ? getattr($this->json->diario, 'descricao', '') : null,
+            "customfield_diario_descricao_historico" => !$this->isRoom ? getattr($this->json->diario, 'descricao_historico', '') : null,
+        ];
         if (!$this->course) {
-            $data = [
-                "category" => $categoryid,
-                "shortname" => $course_code_long,
-                "fullname" => $this->isRoom ? "Sala de coordenação do curso {$this->json->curso->nome}" : $this->json->componente->descricao,
-                "idnumber" => $course_code_long,
-                "visible" => 0,
-                "enablecompletion" => 1,
-                // "startdate"=>time(),
-                "showreports" => 1,
-                "completionnotify" => 1,
-
-                "customfield_campus_id" => $this->json->campus->id,
-                "customfield_campus_descricao" => $this->json->campus->descricao,
-                "customfield_campus_sigla" => $this->json->campus->sigla,
-
-                "customfield_curso_id" => $this->json->curso->id,
-                "customfield_curso_codigo" => $this->json->curso->codigo,
-                "customfield_curso_descricao" => $this->json->curso->descricao,
-                "customfield_curso_nome" => $this->json->curso->nome,
-            ];
-
-            if ($this->isRoom) {
-                $data = array_merge(
-                    $data,
-                    [
-                        "customfield_curso_sala_coordenacao" => 'Sim',
-                    ]
-                );
-            } else {
-                $data = array_merge(
-                    $data,
-                    [
-                        "customfield_curso_sala_coordenacao" => 'Não',
-
-                        "customfield_turma_id" => $this->json->turma->id,
-                        "customfield_turma_codigo" => $this->json->turma->codigo,
-
-                        "customfield_turma_ano_periodo" => substr($this->json->turma->codigo, 0, 4) . "." . substr($this->json->turma->codigo, 4, 1),
-
-                        "customfield_diario_id" => $this->json->diario->id,
-                        "customfield_diario_tipo" => $this->json->diario->tipo,
-                        "customfield_diario_situacao" => $this->json->diario->situacao,
-
-                        "customfield_disciplina_id" => $this->json->componente->id,
-                        "customfield_disciplina_sigla" => $this->json->componente->sigla,
-                        "customfield_disciplina_descricao" => $this->json->componente->descricao,
-                        "customfield_disciplina_descricao_historico" => $this->json->componente->descricao_historico,
-                        // "customfield_disciplina_periodo"=> $this->json->componente->periodo,
-                        "customfield_disciplina_tipo" => $this->json->componente->tipo,
-                        "customfield_disciplina_optativo" => $this->json->componente->optativo,
-                        "customfield_disciplina_qtd_avaliacoes" => $this->json->componente->qtd_avaliacoes,
-                    ]
-                );
-            }
             $this->course = create_course((object)$data);
         } elseif (!$this->isRoom) {
-            $this->course->idnumber = $course_code_long;
-            $this->course->shortname = $course_code_long;
+            $data['id'] = $this->course->id;
+            $this->course = (object)$data;
             update_course($this->course);
         }
 
@@ -386,8 +441,7 @@ class sync_up_enrolments_service extends service
     }
 
 
-    function sync_enrols()
-    {
+    function sync_enrols() {
         $this->professor_enrol = $this->get_enrolment_config('teacher');
         $this->formador_enrol = $this->get_enrolment_config('former');
         $this->tutor_enrol = $this->get_enrolment_config('assistant');
@@ -397,8 +451,7 @@ class sync_up_enrolments_service extends service
     }
 
 
-    function get_enrolment_config($type)
-    {
+    function get_enrolment_config($type) {
         $roleid = config("default_{$type}_role_id");
         $enrol_type = config("default_{$type}_enrol_type");
         $enrol = enrol_get_plugin($enrol_type);
@@ -411,8 +464,7 @@ class sync_up_enrolments_service extends service
     }
 
 
-    function get_instance($enrol_type)
-    {
+    function get_instance($enrol_type) {
         foreach (\enrol_get_instances($this->course->id, FALSE) as $i) {
             if ($i->enrol == $enrol_type) {
                 return $i;
@@ -422,8 +474,7 @@ class sync_up_enrolments_service extends service
     }
 
 
-    function sync_docentes_enrol()
-    {
+    function sync_docentes_enrol() {
         global $CFG, $DB;
 
         if (isset($this->json->professores)) {
@@ -448,8 +499,7 @@ class sync_up_enrolments_service extends service
     }
 
 
-    function sync_discentes_enrol()
-    {
+    function sync_discentes_enrol() {
         global $CFG, $DB;
         $alunos_suspensos = [];
         $alunos_sincronizados = [];
@@ -472,8 +522,7 @@ class sync_up_enrolments_service extends service
     }
 
 
-    function check_user_enrolments($courseid, $userid, $rolename, $enrolmethod)
-    {
+    function check_user_enrolments($courseid, $userid, $rolename, $enrolmethod) {
         global $DB;
 
         $sql = "SELECT ue.id
@@ -489,8 +538,7 @@ class sync_up_enrolments_service extends service
     }
 
 
-    function sync_enrol($enrol, $usuario, $status)
-    {
+    function sync_enrol($enrol, $usuario, $status) {
         if ($this->check_user_enrolments($this->course->id, $usuario->user->id, $enrol->roleid, $enrol->enrol->enrol)) {
             $enrol->enrol->update_user_enrol($enrol->instance, $usuario->user->id, $status);
         } else {
@@ -499,8 +547,7 @@ class sync_up_enrolments_service extends service
     }
 
 
-    function sync_groups()
-    {
+    function sync_groups() {
         global $CFG, $DB;
         if ($this->isRoom) {
             $group_entrada = config('room_group_entrada');
@@ -562,8 +609,7 @@ class sync_up_enrolments_service extends service
         }
     }
 
-    function sync_group($group_name)
-    {
+    function sync_group($group_name) {
         global $DB;
         $data = ['courseid' => $this->course->id, 'name' => $group_name];
         $group = $DB->get_record('groups', $data);
@@ -583,8 +629,7 @@ class sync_up_enrolments_service extends service
         return $group;
     }
 
-    function getIdDosAlunosFaltandoAgrupar($group, $alunos)
-    {
+    function getIdDosAlunosFaltandoAgrupar($group, $alunos) {
         global $DB;
         $alunoIds = array_map(function ($x) {
             return $x->user->id;
@@ -597,8 +642,7 @@ class sync_up_enrolments_service extends service
         }, $ja_existem);
     }
 
-    function sync_cohorts()
-    {
+    function sync_cohorts() {
         global $DB;
 
         $roles = [];

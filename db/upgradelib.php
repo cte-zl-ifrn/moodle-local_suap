@@ -30,86 +30,113 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/local/suap/locallib.php');
 
-function suap_bulk_course_custom_field()
-{
+function save_course_custom_category($name) {
     global $DB;
-    $cid = \local_suap\get_or_create(
+
+    return \local_suap\get_or_create(
         'customfield_category',
-        ['name' => 'SUAP', 'component' => 'core_course', 'area' => 'course'],
+        ['name' => $name, 'component' => 'core_course', 'area' => 'course'],
         ['sortorder' => \local_suap\get_last_sort_order('customfield_category'), 'itemid' => 0, 'contextid' => 1, 'descriptionformat' => 0, 'timecreated' => time(), 'timemodified' => time()]
     )->id;
-    \local_suap\save_course_custom_field($cid, 'campus_id', 'ID do campus');
-    \local_suap\save_course_custom_field($cid, 'campus_descricao', 'Descrição do campus');
-    \local_suap\save_course_custom_field($cid, 'campus_sigla', 'Sigla do campus');
+}
 
-    \local_suap\save_course_custom_field($cid, 'curso_id', 'ID do curso');
-    \local_suap\save_course_custom_field($cid, 'curso_codigo', 'Código do curso');
-    \local_suap\save_course_custom_field($cid, 'curso_descricao', 'Descrição do curso');
-    \local_suap\save_course_custom_field($cid, 'curso_nome', 'Nome do curso');
-    \local_suap\save_course_custom_field($cid, 'curso_sala_coordenacao', 'É sala de coordenação');
-    \local_suap\save_course_custom_field($cid, 'curso_titulo_certificado_masculino', 'Título do certificado masculino');
-    \local_suap\save_course_custom_field($cid, 'curso_titulo_certificado_feminino', 'Título do certificado feminino');
-    \local_suap\save_course_custom_field($cid, 'curso_ch_total', 'Carga horária total do curso');
-    \local_suap\save_course_custom_field($cid, 'curso_ch_aula', 'Carga horária da aula');
-    \local_suap\save_course_custom_field($cid, 'curso_conteudo', 'Conteúdo do curso');
-    \local_suap\save_course_custom_field($cid, 'curso_autoinstrucional', 'Curso é autoinstrucional', 'checkbox');
-    \local_suap\save_course_custom_field($cid, 'curso_autoinscricao', 'Curso aceita autoinscrição', 'checkbox');
-    \local_suap\save_course_custom_field($cid, 'curso_modalidade_id', 'ID da modalidade do curso');
-    \local_suap\save_course_custom_field($cid, 'curso_modalidade_descricao', 'Descrição da modalidade do curso');
-    \local_suap\save_course_custom_field($cid, 'curso_nivel_ensino_id', 'ID do nível de ensino do curso');
-    \local_suap\save_course_custom_field($cid, 'curso_nivel_ensino_descricao', 'Descrição do nível de ensino do curso');
-    \local_suap\save_course_custom_field($cid, 'curso_programa', 'Programa do curso');
+function suap_bulk_course_custom_field() {
+    global $DB;
+    $campus = save_course_custom_category('Campus');
+    \local_suap\save_course_custom_field($campus, 'campus_id', 'ID do campus');
+    \local_suap\save_course_custom_field($campus, 'campus_sigla', 'Sigla do campus');
+    \local_suap\save_course_custom_field($campus, 'campus_descricao', 'Descrição do campus');
 
-    \local_suap\save_course_custom_field($cid, 'turma_id', 'ID da turma');
-    \local_suap\save_course_custom_field($cid, 'turma_codigo', 'Código da turma');
-    \local_suap\save_course_custom_field($cid, 'turma_ano_periodo', 'Ano/Semestre da turma');
-    \local_suap\save_course_custom_field($cid, 'turma_data_inicio', 'Data de início da turma');
-    \local_suap\save_course_custom_field($cid, 'turma_data_fim', 'Data de fim da turma');
-    \local_suap\save_course_custom_field($cid, 'turma_gerar_matricula', 'Gerar matrícula na turma', 'checkbox');
-    \local_suap\save_course_custom_field($cid, 'turma_nota_minima', 'Nota mínima da turma');
-    \local_suap\save_course_custom_field($cid, 'completude_minima', 'Completude mínima da turma');
+    $curso = save_course_custom_category('Curso');
+    \local_suap\save_course_custom_field($curso, 'curso_id', 'ID do curso');
+    \local_suap\save_course_custom_field($curso, 'curso_codigo', 'Código do curso');
+    \local_suap\save_course_custom_field($curso, 'curso_nome', 'Nome do curso');
+    \local_suap\save_course_custom_field($curso, 'curso_descricao', 'Descrição do curso');
+    \local_suap\save_course_custom_field($curso, 'curso_descricao_historico', 'Descrição do curso que constará no histórico');
+    \local_suap\save_course_custom_field($curso, 'curso_titulo_certificado_masculino', 'Título do certificado masculino');
+    \local_suap\save_course_custom_field($curso, 'curso_titulo_certificado_feminino', 'Título do certificado feminino');
+    \local_suap\save_course_custom_field($curso, 'curso_ch_total', 'Carga horária total do curso');
+    \local_suap\save_course_custom_field($curso, 'curso_ch_aula', 'Carga horária da aula');
+    \local_suap\save_course_custom_field($curso, 'curso_conteudo', 'Conteúdo do curso');
+    \local_suap\save_course_custom_field($curso, 'curso_autoinstrucional', 'Curso é autoinstrucional', 'checkbox');
+    \local_suap\save_course_custom_field($curso, 'curso_modalidade_id', 'ID da modalidade do curso');
+    \local_suap\save_course_custom_field($curso, 'curso_modalidade_descricao', 'Descrição da modalidade do curso');
+    \local_suap\save_course_custom_field($curso, 'curso_nivel_ensino_id', 'ID do nível de ensino do curso');
+    \local_suap\save_course_custom_field($curso, 'curso_nivel_ensino_descricao', 'Descrição do nível de ensino do curso');
+    \local_suap\save_course_custom_field($curso, 'curso_programa', 'Programa do curso');
+    \local_suap\save_course_custom_field($curso, 'curso_restricoes', 'Restrições do curso');
+    \local_suap\save_course_custom_field($curso, 'curso_sala_coordenacao', 'É sala de coordenação do curso');
 
+    $turma = save_course_custom_category('Turma');
+    \local_suap\save_course_custom_field($turma, 'turma_id', 'ID da turma');
+    \local_suap\save_course_custom_field($turma, 'turma_codigo', 'Código da turma');
+    \local_suap\save_course_custom_field($turma, 'turma_ano_periodo', 'Ano/Semestre da turma');
+    \local_suap\save_course_custom_field($turma, 'turma_data_inicio', 'Data de início da turma');
+    \local_suap\save_course_custom_field($turma, 'turma_data_fim', 'Data de fim da turma');
+    \local_suap\save_course_custom_field($turma, 'turma_gerar_matricula', 'Gerar matrícula na turma', 'checkbox');
+    \local_suap\save_course_custom_field($turma, 'turma_nota_minima', 'Nota mínima da turma');
+    \local_suap\save_course_custom_field($turma, 'turma_completude_minima', 'Completude mínima da turma');
+    \local_suap\save_course_custom_field($turma, 'turma_modelo_padrao', 'Modelo padrão da turma');
 
-    \local_suap\save_course_custom_field($cid, 'diario_id', 'ID do diário');
-    \local_suap\save_course_custom_field($cid, 'diario_tipo', 'Tipo de diário');
-    \local_suap\save_course_custom_field($cid, 'diario_situacao', 'Situação do diário');
+    $componente = save_course_custom_category('Disciplina/Componente curricular');
+    \local_suap\save_course_custom_field($componente, 'disciplina_id', 'ID da disciplina');
+    \local_suap\save_course_custom_field($componente, 'disciplina_sigla', 'Sigla da disciplina');
+    \local_suap\save_course_custom_field($componente, 'disciplina_descricao', 'Descrição da disciplina');
+    \local_suap\save_course_custom_field($componente, 'disciplina_descricao_historico', 'Descrição da disciplina que constará no histórico');
+    \local_suap\save_course_custom_field($componente, 'disciplina_periodo', 'Período da disciplina');
+    \local_suap\save_course_custom_field($componente, 'disciplina_tipo', 'Tipo da disciplina');
+    \local_suap\save_course_custom_field($componente, 'disciplina_optativo', 'Optativo da disciplina');
+    \local_suap\save_course_custom_field($componente, 'disciplina_qtd_avaliacoes', 'Quantidade de avaliações da disciplina');
+    \local_suap\save_course_custom_field($componente, 'disciplina_is_seminario_estagio_docente', 'É disciplina de seminário ou estágio docente', 'checkbox');
+    \local_suap\save_course_custom_field($componente, 'disciplina_ch_presencial', 'Carga horária presencial da disciplina');
+    \local_suap\save_course_custom_field($componente, 'disciplina_ch_pratica', 'Carga horária prática da disciplina');
+    \local_suap\save_course_custom_field($componente, 'disciplina_ch_extensao', 'Carga horária de extensão da disciplina');
+    \local_suap\save_course_custom_field($componente, 'disciplina_ch_pcc', 'Carga horária de PCC da disciplina');
+    \local_suap\save_course_custom_field($componente, 'disciplina_ch_visita_tecnica', 'Carga horária de visita técnica da disciplina');
+    \local_suap\save_course_custom_field($componente, 'disciplina_ch_semanal_1s', 'Carga horária semanal do 1º semestre da disciplina');
+    \local_suap\save_course_custom_field($componente, 'disciplina_ch_semanal_2s', 'Carga horária semanal do 2º semestre da disciplina');
 
-    \local_suap\save_course_custom_field($cid, 'disciplina_id', 'ID da disciplina');
-    \local_suap\save_course_custom_field($cid, 'disciplina_descricao', 'Descrição da disciplina');
-    \local_suap\save_course_custom_field($cid, 'disciplina_descricao_historico', 'Descrição da disciplina que constará no histórico');
-    \local_suap\save_course_custom_field($cid, 'disciplina_sigla', 'Sigla da disciplina');
-    \local_suap\save_course_custom_field($cid, 'disciplina_periodo', 'Período da disciplina');
-    \local_suap\save_course_custom_field($cid, 'disciplina_tipo', 'Tipo da disciplina');
-    \local_suap\save_course_custom_field($cid, 'disciplina_optativo', 'Optativo da disciplina');
-    \local_suap\save_course_custom_field($cid, 'disciplina_qtd_avaliacoes', 'Quantidade de avaliações da disciplina');
-    \local_suap\save_course_custom_field($cid, 'disciplina_is_seminario_estagio_docente', 'É disciplina de seminário ou estágio docente', 'checkbox');
-    \local_suap\save_course_custom_field($cid, 'disciplina_ch_presencial', 'Carga horária presencial da disciplina');
-    \local_suap\save_course_custom_field($cid, 'disciplina_ch_pratica', 'Carga horária prática da disciplina');
-    \local_suap\save_course_custom_field($cid, 'disciplina_ch_extensao', 'Carga horária de extensão da disciplina');
-    \local_suap\save_course_custom_field($cid, 'disciplina_ch_pcc', 'Carga horária de PCC da disciplina');
-    \local_suap\save_course_custom_field($cid, 'disciplina_ch_visita_tecnica', 'Carga horária de visita técnica da disciplina');
-    \local_suap\save_course_custom_field($cid, 'disciplina_ch_semanal_1s', 'Carga horária semanal do 1º semestre da disciplina');
-    \local_suap\save_course_custom_field($cid, 'disciplina_ch_semanal_2s', 'Carga horária semanal do 2º semestre da disciplina');
+    $diario = save_course_custom_category('Diário');
+    \local_suap\save_course_custom_field($diario, 'diario_id', 'ID do diário');
+    \local_suap\save_course_custom_field($diario, 'diario_tipo', 'Tipo de diário');
+    \local_suap\save_course_custom_field($diario, 'diario_situacao', 'Situação do diário');
+    \local_suap\save_course_custom_field($diario, 'diario_descricao', 'Descrição do diário');
+    \local_suap\save_course_custom_field($diario, 'diario_descricao_historico', 'Descrição do diário que constará no histórico');
 
-    \local_suap\save_course_custom_field($cid, 'carga_horaria', 'Carga horária');
-    \local_suap\save_course_custom_field($cid, 'tem_certificado', 'Tem certificado', 'checkbox');
+    $aberto = save_course_custom_category('Aberto');
+    $linguagens = json_encode([
+        "required" => "0",
+        "uniquevalues" => "0",
+        "options" => \local_suap\get_languages(),
+        "defaultvalue" => "pt_br",
+        "locked" => "0",
+        "visibility" => "2"
+    ]);
+    \local_suap\save_course_custom_field($aberto, 'carga_horaria', 'Carga horária');
+    \local_suap\save_course_custom_field($aberto, 'tem_certificado', 'Tem certificado', 'checkbox');
+    \local_suap\save_course_custom_field($aberto, 'linguagem_conteudo', 'Linguagem do conteúdo', 'select', $linguagens);
 
-    \local_suap\save_course_custom_field(
-        $cid,
-        'linguagem_conteudo',
-        'Linguagem do conteúdo',
-        'select',
-        json_encode([
-            "required" => "0",
-            "uniquevalues" => "0",
-            "options" => \local_suap\get_languages(),
-            "defaultvalue" => "pt_br",
-            "locked" => "0",
-            "visibility" => "2"
-        ])
-    );
+    $integrador_ava = save_course_custom_category('Integrador AVA');
+    \local_suap\save_course_custom_field($integrador_ava, 'grupos_sincronizados', 'Grupos sincronizados pelo Integrador AVA');
+    \local_suap\save_course_custom_field($integrador_ava, 'curso_autoinscricao', 'Curso aceita autoinscrição', 'checkbox');
 
-    \local_suap\save_course_custom_field($cid, 'grupos_sincronizados', 'Grupos sincronizados pelo integrador');
+    $painel_ava = save_course_custom_category('Painel AVA');
+    $sql = "       SELECT 'diarios'        AS id, 'Diários'        AS data"
+         . " UNION SELECT 'autoinscricoes' AS id, 'Autoinscrições' AS data"
+         . " UNION SELECT 'coordenacoes'   AS id, 'Coordenações'   AS data"
+         . " UNION SELECT 'praticas'       AS id, 'Práticas'       AS data"
+         . " UNION SELECT 'modelos'        AS id, 'Modelos'        AS data";    
+    $configdata = json_encode([
+        "required" => "0",
+        "uniquevalues" => "0",
+        "dynamicsql" => $sql,
+        "autocomplete" => "0",
+        "defaultvalue" => "",
+        "multiselect" => "0",
+        "locked" => "1",
+        "visibility" => "0"
+    ]);    
+    \local_suap\save_course_custom_field($painel_ava, 'sala_tipo', 'Tipo de sala', 'dynamic', $configdata);
 }
 
 
