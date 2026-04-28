@@ -43,8 +43,10 @@ class sync_up_enrolments_service extends service {
     private $isRoom;
     private $aluno_enrol;
     private $professor_enrol;
+    private $formador_enrol;
     private $tutor_enrol;
     private $docente_enrol;
+    private $mediador_enrol;
     private $studentAuth;
     private $teacherAuth;
     private $assistantAuth;
@@ -87,18 +89,18 @@ class sync_up_enrolments_service extends service {
 
         $this->validate_json($jsonstring);
         $this->sync_categories();
-        if ($inBackground) {
+        // if ($inBackground) {
             $this->sync_oauth_issuer();
             $this->sync_auths();
             $this->sync_users();
-        }
+        // }
 
         $this->isRoom = false;
         $this->sync_course($this->turmaCategory->id);
         $this->diario = $this->course;
         // if ($inBackground) {
-        //     $this->sync_enrols();
-        //     $this->sync_docentes_enrol();
+            $this->sync_enrols();
+            $this->sync_docentes_enrol();
         //     $this->sync_discentes_enrol();
         //     $this->sync_groups();
         //     $this->sync_cohorts();
@@ -206,9 +208,8 @@ class sync_up_enrolments_service extends service {
 
         $username = strtolower($usuario->isAluno ? $usuario->matricula : $usuario->login);
         $email = !empty($usuario->email) ? $usuario->email : $usuario->email_secundario;
-        $status = $usuario->ativo ?? $usuario->situacao ?? $usuario->status ?? null;
+        $status = $usuario->ativo ?? $usuario->situacao ?? $usuario->status ?? 'false';
         $suspended = in_array(strtolower($status), ['ativo', 'true']) ? 0 : 1;
-
         $nome_parts = explode(' ', $usuario->nome);
         $firstname = implode(' ', array_slice($nome_parts, 0, -1));
         $lastname = end($nome_parts);
@@ -243,29 +244,29 @@ class sync_up_enrolments_service extends service {
         }
 
         if ($usuario->isAluno) {
+            $polo = getattr($usuario, 'polo', (object)[]);
             $custom_fields = [
-                'programa_nome' => isset($usuario->programa) ? $usuario->programa : "Institucional",
-                'curso_descricao' => $this->json->curso->nome,
-                'curso_codigo' => $this->json->curso->codigo,
-                'nome_usual' => $this->json->usuario->nome_usual,
-                'nome_social' => $this->json->usuario->nome_social,
-                'nome_registro' => $this->json->usuario->nome_registro,
-                'cpf' => $this->json->usuario->cpf,
-                'passaporte' => $this->json->usuario->passaporte,
-                'outras_matriculas' => $this->json->usuario->outras_matriculas,
-                'eh_servidor' => $this->json->usuario->eh_servidor,
-                'eh_aluno' => $this->json->usuario->eh_aluno,
-                'eh_prestador' => $this->json->usuario->eh_prestador,
-                'eh_usuarioexterno' => $this->json->usuario->eh_usuarioexterno,
-                'eh_docente' => $this->json->usuario->eh_docente,
-                'eh_tecnico_administrativo' => $this->json->usuario->eh_tecnico_administrativo,
-                'eh_estrangeiro' => $this->json->usuario->eh_estrangeiro,
+                'curso_descricao' => getattr($this->json->curso, 'nome'),
+                'curso_codigo' => getattr($this->json->curso, 'codigo'),
+                'programa_nome' => getattr($usuario, 'programa', "Institucional"),
+                'nome_usual' => getattr($usuario, 'nome_usual'),
+                'nome_social' => getattr($usuario, 'nome_social'),
+                'nome_registro' => getattr($usuario, 'nome_registro'),
+                'cpf' => getattr($usuario, 'cpf'),
+                'passaporte' => getattr($usuario, 'passaporte'),
+                'id_doc_certificado' => getattr($usuario, 'cpf') != '' ?  'cpf' : (getattr($usuario, 'passaporte') != '' ?  'passaporte' : ''),
+                'outras_matriculas' => json_encode(getattr($usuario, 'outras_matriculas', [])),
+                'eh_servidor' => getattr($usuario, 'eh_servidor'),
+                'eh_aluno' => getattr($usuario, 'eh_aluno'),
+                'eh_prestador' => getattr($usuario, 'eh_prestador'),
+                'eh_usuarioexterno' => getattr($usuario, 'eh_usuarioexterno'),
+                'eh_docente' => getattr($usuario, 'eh_docente'),
+                'eh_tecnico_administrativo' => getattr($usuario, 'eh_tecnico_administrativo'),
+                'eh_estrangeiro' => getattr($usuario, 'eh_estrangeiro'),
+                'polo_id' => getattr($polo, 'id', ''),
+                'polo_nome' => getattr($polo, 'descricao', ''),
+                'polo_sigla' => getattr($polo, 'sigla', '')
             ];
-            if (property_exists($usuario, 'polo')) {
-                $custom_fields['polo_id'] = property_exists($usuario->polo, 'id') ? $usuario->polo->id: '';
-                $custom_fields['polo_nome'] = property_exists($usuario->polo, 'descricao') ? $usuario->polo->descricao: '';
-                $custom_fields['polo_sigla'] = property_exists($usuario->polo, 'sigla') ? $usuario->polo->sigla: '';
-            }
             \profile_save_custom_fields($usuario->user->id, $custom_fields);
         }
     }
