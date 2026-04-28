@@ -117,7 +117,7 @@ class sync_up_enrolments_service extends service {
 
         return [
             "url" => "$prefix?id={$this->diario->id}",
-            // "url_sala_coordenacao" => "$prefix?id={$this->coordenacao->id}",
+            "url_sala_coordenacao" => "$prefix?id={$this->coordenacao->id}",
             "roles_not_found" => $this->roles_not_found
         ];
     }
@@ -262,9 +262,9 @@ class sync_up_enrolments_service extends service {
                 'eh_estrangeiro' => $this->json->usuario->eh_estrangeiro,
             ];
             if (property_exists($usuario, 'polo')) {
-                $custom_fields['polo_id'] = property_exists($usuario->polo, 'id') ? $usuario->polo->id : null;
-                $custom_fields['polo_nome'] = property_exists($usuario->polo, 'descricao') ? $usuario->polo->descricao : null;
-                $custom_fields['polo_sigla'] = property_exists($usuario->polo, 'sigla') ? $usuario->polo->sigla : null;
+                $custom_fields['polo_id'] = property_exists($usuario->polo, 'id') ? $usuario->polo->id: '';
+                $custom_fields['polo_nome'] = property_exists($usuario->polo, 'descricao') ? $usuario->polo->descricao: '';
+                $custom_fields['polo_sigla'] = property_exists($usuario->polo, 'sigla') ? $usuario->polo->sigla: '';
             }
             \profile_save_custom_fields($usuario->user->id, $custom_fields);
         }
@@ -326,6 +326,22 @@ class sync_up_enrolments_service extends service {
         };
     }
 
+    function get_componente_tipo() {
+        /* 1:Regular, 2:Seminário, 3:Prática Profissional, 4:Trabalho de Conclusão de Curso, 5:Atividade de Extensão, 6:Prática como Componente Curricular, 7:Visita Técnica / Aula da Campo, 8:Componentes Extracurriculares */        
+        $tipo = getattr($this->json->componente, 'tipo', '1');
+        return match (true) {
+            $tipo == '1' => 'Regular',
+            $tipo == '2' => 'Seminário',
+            $tipo == '3' => 'Prática Profissional',
+            $tipo == '4' => 'Trabalho de Conclusão de Curso',
+            $tipo == '5' => 'Atividade de Extensão',
+            $tipo == '6' => 'Prática como Componente Curricular',
+            $tipo == '7' => 'Visita Técnica / Aula da Campo',
+            $tipo == '8' => 'Componentes Extracurriculares',
+            default => 'Regular',
+        };
+    }
+
 
     function sync_course($categoryid) {
         global $DB;
@@ -338,10 +354,7 @@ class sync_up_enrolments_service extends service {
         }
 
         $modalidade = getattr($this->json->curso, 'modalidade', (object)[]);
-        $nivelensino = getattr($this->json->curso, 'nivel_ensino', (object)[]);
-
-        // var_export(getattr($this->json->curso, 'titulo_certificado_masculino', ''));
-        // die();
+        $nivelensino = getattr($modalidade, 'nivel_ensino', (object)[]);
 
         $data = [
             "category" => $categoryid,
@@ -359,6 +372,7 @@ class sync_up_enrolments_service extends service {
 
             /* Obrigatório - Painel AVA */
             "customfield_sala_tipo" => $this->get_sala_tipo(),
+            "customfield_curso_autoinscricao" => $this->isRoom ? '' : (getattr($this->json->curso, 'autoinscricao') == 'true' ? '1' : '0'),
 
             /* Obrigatórios - Campus */
             "customfield_campus_id" => $this->json->campus->id,
@@ -371,64 +385,64 @@ class sync_up_enrolments_service extends service {
             "customfield_curso_nome" => $this->json->curso->nome,
 
             /* Opcionais - Curso */
-            "customfield_curso_descricao" => getattr($this->json->curso, 'descricao', ''),
-            "customfield_curso_descricao_historico" => getattr($this->json->curso, 'descricao_historico', ''),
-            "customfield_curso_titulo_certificado_masculino" => getattr($this->json->curso, 'titulo_certificado_masculino', ''),
-            "customfield_curso_titulo_certificado_feminino" => getattr($this->json->curso, 'titulo_certificado_feminino', ''),
-            "customfield_curso_ch_total" => getattr($this->json->curso, 'ch_total', ''),
-            "customfield_curso_ch_aula" => getattr($this->json->curso, 'ch_aula', ''),
-            "customfield_curso_curso_conteudo" => getattr($this->json->curso, 'conteudo', ''),
-            "customfield_curso_autoinstrucional" => getattr($this->json->curso, 'autoinstrucional', ''),
-            "customfield_curso_autoinscricao" => getattr($this->json->curso, 'autoinscricao', ''),
-            "customfield_curso_modalidade_id" => getattr($modalidade, 'id', ''),
-            "customfield_curso_modalidade_descricao" => getattr($modalidade, 'descricao', ''),
-            "customfield_curso_nivel_ensino_id" => getattr($nivelensino, 'id', ''),
-            "customfield_curso_nivel_ensino_descricao" => getattr($nivelensino, 'descricao', ''),
-            "customfield_curso_programa" => getattr($this->json->curso, 'programa', ''),
+            "customfield_curso_descricao" => getattr($this->json->curso, 'descricao'),
+            "customfield_curso_descricao_historico" => getattr($this->json->curso, 'descricao_historico'),
+            "customfield_curso_titulo_certificado_masculino" => getattr($this->json->curso, 'titulo_certificado_masculino'),
+            "customfield_curso_titulo_certificado_feminino" => getattr($this->json->curso, 'titulo_certificado_feminino'),
+            "customfield_curso_ch_total" => getattr($this->json->curso, 'ch_total'),
+            "customfield_curso_ch_aula" => getattr($this->json->curso, 'ch_aula'),
+            "customfield_curso_autoinstrucional" => getattr($this->json->curso, 'autoinstrucional') == 'true' ? '1' : '0',
+            "customfield_curso_programa" => getattr($this->json->curso, 'programa'),
+            "customfield_curso_modalidade_id" => getattr($modalidade, 'id'),
+            "customfield_curso_modalidade_descricao" => getattr($modalidade, 'descricao'),
+            "customfield_curso_nivel_ensino_id" => getattr($nivelensino, 'id'),
+            "customfield_curso_nivel_ensino_descricao" => getattr($nivelensino, 'descricao'),
+            "customfield_curso_conteudo" => json_encode(getattr($this->json->curso, 'conteudo', [])),
             "customfield_curso_restricoes" => json_encode(getattr($this->json->curso, 'restricoes', [])),
 
-            /* Obrigatórios - Turma */
-            "customfield_turma_id" => !$this->isRoom ? getattr($this->json->turma, 'id', '') : null,
-            "customfield_turma_codigo" => !$this->isRoom ? getattr($this->json->turma, 'codigo', '') : null,
-
-            /* Opcionais - Turma */
-            "customfield_turma_ano_periodo" => !$this->isRoom ? substr(getattr($this->json->turma, 'codigo'), 0, 4) . "." . substr(getattr($this->json->turma, 'codigo'), 4, 1) : null,
-            "customfield_turma_data_inicio" => !$this->isRoom ? getattr($this->json->turma, 'data_inicio', '') : null,
-            "customfield_turma_data_fim" => !$this->isRoom ? getattr($this->json->turma, 'data_fim', '') : null,
-            "customfield_turma_gerar_matricula" => !$this->isRoom ? getattr($this->json->turma, 'gerar_matricula', '') : null,
-            "customfield_turma_nota_minima" => !$this->isRoom ? getattr($this->json->turma, 'nota_minima', '') : null,
-            "customfield_turma_completude_minima" => !$this->isRoom ? getattr($this->json->turma, 'completude_minima', '') : null,
-            "customfield_turma_modelo_padrao" => !$this->isRoom ? getattr($this->json->turma, 'modelo_padrao', '') : null,
-
             /* Obrigatórios - Componente Curricular */
-            "customfield_disciplina_id" => !$this->isRoom ? getattr($this->json->componente, 'id', '') : null,
-            "customfield_disciplina_sigla" => !$this->isRoom ? getattr($this->json->componente, 'sigla', '') : null,
-            "customfield_disciplina_descricao" => !$this->isRoom ? getattr($this->json->componente, 'descricao', '') : null,
+            "customfield_disciplina_id" => $this->isRoom ? '' : $this->json->componente->id ,
+            "customfield_disciplina_sigla" => $this->isRoom ? '' : $this->json->componente->sigla ,
+            "customfield_disciplina_descricao" => $this->isRoom ? '' : $this->json->componente->descricao ,
 
             /* Opcionais - Componente Curricular */
-            "customfield_disciplina_descricao_historico" => !$this->isRoom ? getattr($this->json->componente, 'descricao_historico', '') : null,
-            "customfield_disciplina_periodo" => !$this->isRoom ? getattr($this->json->componente, 'disciplina_periodo', '') : null,
-            "customfield_disciplina_tipo" => !$this->isRoom ? getattr($this->json->componente, 'tipo', '') : null,
-            "customfield_disciplina_optativo" => !$this->isRoom ? getattr($this->json->componente, 'optativo', '') : null,
-            "customfield_disciplina_qtd_avaliacoes" => !$this->isRoom ? getattr($this->json->componente, 'qtd_avaliacoes', '') : null,
-            "customfield_disciplina_is_seminario_estagio_docente" => !$this->isRoom ? getattr($this->json->componente, 'is_seminario_estagio_docente', '') : null,
-            "customfield_disciplina_ch_presencial" => !$this->isRoom ? getattr($this->json->componente, 'ch_presencial', '') : null,
-            "customfield_disciplina_ch_pratica" => !$this->isRoom ? getattr($this->json->componente, 'ch_pratica', '') : null,
-            "customfield_disciplina_ch_extensao" => !$this->isRoom ? getattr($this->json->componente, 'ch_extensao', '') : null,
-            "customfield_disciplina_ch_pcc" => !$this->isRoom ? getattr($this->json->componente, 'ch_pcc', '') : null,
-            "customfield_disciplina_ch_visita_tecnica" => !$this->isRoom ? getattr($this->json->componente, 'ch_visita_tecnica', '') : null,
-            "customfield_disciplina_ch_semanal_1s" => !$this->isRoom ? getattr($this->json->componente, 'ch_semanal_1s', '') : null,
-            "customfield_disciplina_ch_semanal_2s" => !$this->isRoom ? getattr($this->json->componente, 'ch_semanal_2s', '') : null,
+            "customfield_disciplina_descricao_historico" => $this->isRoom ? '' : getattr($this->json->componente, 'descricao_historico'),
+            "customfield_disciplina_periodo" => $this->isRoom ? '' : getattr($this->json->componente, 'periodo'),
+            "customfield_disciplina_tipo" => $this->isRoom ? '' : $this->get_componente_tipo(),
+            "customfield_disciplina_optativo" => $this->isRoom ? '' : getattr($this->json->componente, 'optativo'),
+            "customfield_disciplina_qtd_avaliacoes" => $this->isRoom ? '' : getattr($this->json->componente, 'qtd_avaliacoes'),
+            "customfield_disciplina_is_seminario_estagio_docente" => $this->isRoom ? '' : getattr($this->json->componente, 'is_seminario_estagio_docente'),
+            "customfield_disciplina_ch_presencial" => $this->isRoom ? '' : getattr($this->json->componente, 'ch_presencial'),
+            "customfield_disciplina_ch_pratica" => $this->isRoom ? '' : getattr($this->json->componente, 'ch_pratica'),
+            "customfield_disciplina_ch_extensao" => $this->isRoom ? '' : getattr($this->json->componente, 'ch_extensao'),
+            "customfield_disciplina_ch_pcc" => $this->isRoom ? '' : getattr($this->json->componente, 'ch_pcc'),
+            "customfield_disciplina_ch_visita_tecnica" => $this->isRoom ? '' : getattr($this->json->componente, 'ch_visita_tecnica'),
+            "customfield_disciplina_ch_semanal_1s" => $this->isRoom ? '' : getattr($this->json->componente, 'ch_semanal_1s'),
+            "customfield_disciplina_ch_semanal_2s" => $this->isRoom ? '' : getattr($this->json->componente, 'ch_semanal_2s'),
 
-            // /* Obrigatórios - Diário */
-            "customfield_diario_id" => !$this->isRoom ? getattr($this->json->diario, 'id', '') : null,
-            "customfield_diario_tipo" => !$this->isRoom ? getattr($this->json->diario, 'tipo', '') : null,
+            /* Obrigatórios - Turma */
+            "customfield_turma_id" => $this->isRoom ? '' : $this->json->turma->id ,
+            "customfield_turma_codigo" => $this->isRoom ? '' : $this->json->turma->codigo ,
+
+            /* Opcionais - Turma */
+            "customfield_turma_ano_periodo" => $this->isRoom ? '' : substr(getattr($this->json->turma, 'codigo'), 0, 4) . "." . substr(getattr($this->json->turma, 'codigo'), 4, 1),
+            "customfield_turma_data_inicio" => $this->isRoom ? '' : getattr($this->json->turma, 'data_inicio'),
+            "customfield_turma_data_fim" => $this->isRoom ? '' : getattr($this->json->turma, 'data_fim'),
+            "customfield_turma_gerar_matricula" => $this->isRoom ? '' : getattr($this->json->turma, 'gerar_matricula'),
+            "customfield_turma_nota_minima" => $this->isRoom ? '' : getattr($this->json->turma, 'nota_minima'),
+            "customfield_turma_completude_minima" => $this->isRoom ? '' : getattr($this->json->turma, 'completude_minima'),
+            "customfield_turma_modelo_padrao" => $this->isRoom ? '' : getattr($this->json->turma, 'modelo_padrao'),
+
+            /* Obrigatórios - Diário */
+            "customfield_diario_id" => $this->isRoom ? '' : $this->json->diario->id,
 
             /* Opcionais - Diário */
-            "customfield_diario_situacao" => !$this->isRoom ? getattr($this->json->diario, 'situacao', '') : null,
-            "customfield_diario_descricao" => !$this->isRoom ? getattr($this->json->diario, 'descricao', '') : null,
-            "customfield_diario_descricao_historico" => !$this->isRoom ? getattr($this->json->diario, 'descricao_historico', '') : null,
+            "customfield_diario_tipo" => $this->isRoom ? '' : getattr($this->json->diario, 'tipo', 'regular'),
+            "customfield_diario_situacao" => $this->isRoom ? '' : getattr($this->json->diario, 'situacao'),
+            "customfield_diario_descricao" => $this->isRoom ? '' : getattr($this->json->diario, 'descricao'),
+            "customfield_diario_descricao_historico" => $this->isRoom ? '' : getattr($this->json->diario, 'descricao_historico'),
         ];
+
         if (!$this->course) {
             $this->course = create_course((object)$data);
         } elseif (!$this->isRoom) {
