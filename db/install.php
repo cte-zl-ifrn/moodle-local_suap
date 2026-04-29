@@ -24,7 +24,7 @@
  */
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/local/suap/db/upgrade.php');
-require_once(__DIR__.'/upgradelib.php');
+require_once(__DIR__.'/migrate.php');
 
 /**
  * Custom code to be run on installing the plugin.

@@ -60,7 +60,7 @@ Authentication: Token changeme
             "nome": "Nome do aluno quatro",
             "polo": {
                 "id": 1,
-                "descricao": "Pólo Assú"
+                "descricao": "Polo Assú"
             },
             "situacao": "Ativo",
             "matricula": "201830000100004",
@@ -72,7 +72,7 @@ Authentication: Token changeme
             "nome": "Nome do aluno cinco",
             "polo": {
                 "id": 2,
-                "descricao": "Pólo EaD"
+                "descricao": "Polo EaD"
             },
             "situacao": "Inativo",
             "situacao_diario": "inAtivo",
@@ -85,7 +85,7 @@ Authentication: Token changeme
             "nome": "Nome do aluno seis",
             "polo": {
                 "id": 2,
-                "descricao": "Pólo EaD"
+                "descricao": "Polo EaD"
             },
             "situacao": "Ativo",
             "matricula": "201830000100006",
@@ -167,7 +167,7 @@ Authentication: Token changeme
             "nome": "Nome do aluno quatro",
             "polo": {
                 "id": 1,
-                "descricao": "Pólo Assú"
+                "descricao": "Polo Assú"
             },
             "situacao": "Ativo",
             "situacao_diario": "inAtivo",
@@ -180,7 +180,7 @@ Authentication: Token changeme
             "nome": "Nome do aluno cinco",
             "polo": {
                 "id": 2,
-                "descricao": "Pólo EaD"
+                "descricao": "Polo EaD"
             },
             "programa": "UAB",
             "situacao": "Inativo",
@@ -238,7 +238,7 @@ Authentication: Token changeme
             "nome": "Nome do aluno quatro",
             "polo": {
                 "id": 1,
-                "descricao": "Pólo Assú"
+                "descricao": "Polo Assú"
             },
             "situacao": "Ativo",
             "matricula": "201830000100004",
@@ -250,7 +250,7 @@ Authentication: Token changeme
             "nome": "Nome do aluno cinco",
             "polo": {
                 "id": 2,
-                "descricao": "Pólo EaD"
+                "descricao": "Polo EaD"
             },
             "situacao": "Inativo",
             "situacao_diario": "inAtivo",
@@ -263,7 +263,7 @@ Authentication: Token changeme
             "nome": "Nome do aluno seis",
             "polo": {
                 "id": 2,
-                "descricao": "Pólo EaD"
+                "descricao": "Polo EaD"
             },
             "situacao": "Ativo",
             "matricula": "201830000100006",

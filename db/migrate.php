@@ -145,40 +145,64 @@ function suap_bulk_user_custom_field()
 {
     global $DB;
 
-    $cid = \local_suap\get_or_create('user_info_category', ['name' => 'SUAP'], ['sortorder' => \local_suap\get_last_sort_order('user_info_category')])->id;
+    $suap = \local_suap\get_or_create('user_info_category', ['name' => 'SUAP'], ['sortorder' => \local_suap\get_last_sort_order('user_info_category')])->id;
+    \local_suap\save_user_custom_field($suap, 'tipo_usuario', 'Tipo de usuário');
+    \local_suap\save_user_custom_field($suap, 'eh_servidor', 'É servidor', 'checkbox');
+    \local_suap\save_user_custom_field($suap, 'eh_aluno', 'É aluno', 'checkbox');
+    \local_suap\save_user_custom_field($suap, 'eh_prestador', 'É prestador', 'checkbox');
+    \local_suap\save_user_custom_field($suap, 'eh_usuarioexterno', 'É usuário externo', 'checkbox');
+    \local_suap\save_user_custom_field($suap, 'eh_docente', 'É docente', 'checkbox');
+    \local_suap\save_user_custom_field($suap, 'eh_tecnico_administrativo', 'É técnico administrativo', 'checkbox');
+    \local_suap\save_user_custom_field($suap, 'last_login', 'JSON do último login', 'textarea', 0);
 
-    \local_suap\save_user_custom_field($cid, 'email_google_classroom', 'E-mail @escolar (Google Classroom');
-    \local_suap\save_user_custom_field($cid, 'email_academico', 'E-mail @academico (Microsoft)');
-    \local_suap\save_user_custom_field($cid, 'email_secundario', 'Secundário (servidores)');
+    $pessoais = \local_suap\get_or_create('user_info_category', ['name' => 'Dados pessoais'], ['sortorder' => \local_suap\get_last_sort_order('user_info_category')])->id;
+    \local_suap\save_user_custom_field($pessoais, 'nome_apresentacao', 'Nome de apresentação');
+    \local_suap\save_user_custom_field($pessoais, 'nome_completo', 'Nome completo');
+    \local_suap\save_user_custom_field($pessoais, 'nome_social', 'Nome social');
+    \local_suap\save_user_custom_field($pessoais, 'data_de_nascimento', 'Data de nascimento');
+    \local_suap\save_user_custom_field($pessoais, 'sexo', 'Sexo');
+    \local_suap\save_user_custom_field($pessoais, 'cpf', 'CPF');
+    \local_suap\save_user_custom_field($pessoais, 'passaporte', 'Passaporte');
+    \local_suap\save_user_custom_field($pessoais, 'id_doc_certificado', 'ID do documento para certificado');
+    \local_suap\save_user_custom_field($pessoais, 'tipo_doc_certificado', 'Tipo de documento para certificado');
+    \local_suap\save_user_custom_field($pessoais, 'eh_estrangeiro', 'É estrangeiro', 'checkbox');
 
-    \local_suap\save_user_custom_field($cid, 'campus_id', 'ID do campus');
-    \local_suap\save_user_custom_field($cid, 'campus_descricao', 'Descrição do campus');
-    \local_suap\save_user_custom_field($cid, 'campus_sigla', 'Sigla do campus');
+    $contatos = \local_suap\get_or_create('user_info_category', ['name' => 'Dados de contato'], ['sortorder' => \local_suap\get_last_sort_order('user_info_category')])->id;
+    \local_suap\save_user_custom_field($contatos, 'email_google_classroom', 'E-mail @escolar (Google Classroom)');
+    \local_suap\save_user_custom_field($contatos, 'email_academico', 'E-mail @academico (Microsoft)');
+    \local_suap\save_user_custom_field($contatos, 'email_secundario', 'Secundário (servidores)');
 
-    \local_suap\save_user_custom_field($cid, 'curso_id', 'ID do curso');
-    \local_suap\save_user_custom_field($cid, 'curso_codigo', 'Código do curso');
-    \local_suap\save_user_custom_field($cid, 'curso_descricao', 'Descrição do curso');
+    $matricula = \local_suap\get_or_create('user_info_category', ['name' => 'Matrícula'], ['sortorder' => \local_suap\get_last_sort_order('user_info_category')])->id;
+    \local_suap\save_user_custom_field($matricula, 'programa_nome', 'Nome do programa');
+    \local_suap\save_user_custom_field($matricula, 'ingresso_periodo', 'Período de ingresso');
+    \local_suap\save_user_custom_field($matricula, 'outras_matriculas', 'Outras matrículas');    
 
-    \local_suap\save_user_custom_field($cid, 'turma_id', 'ID da turma');
-    \local_suap\save_user_custom_field($cid, 'turma_codigo', 'Código da turma');
+    $polo = \local_suap\get_or_create('user_info_category', ['name' => 'Polo'], ['sortorder' => \local_suap\get_last_sort_order('user_info_category')])->id;
+    \local_suap\save_user_custom_field($polo, 'polo_id', 'ID do polo');
+    \local_suap\save_user_custom_field($polo, 'polo_nome', 'Nome do polo');
+    \local_suap\save_user_custom_field($polo, 'polo_sigla', 'Sigla do polo');
 
-    \local_suap\save_user_custom_field($cid, 'polo_id', 'ID do pólo');
-    \local_suap\save_user_custom_field($cid, 'polo_nome', 'Nome do pólo');
-    \local_suap\save_user_custom_field($cid, 'polo_sigla', 'Sigla do pólo');
+    $campus = \local_suap\get_or_create('user_info_category', ['name' => 'Campus'], ['sortorder' => \local_suap\get_last_sort_order('user_info_category')])->id;
+    \local_suap\save_user_custom_field($campus, 'campus_id', 'ID do campus');
+    \local_suap\save_user_custom_field($campus, 'campus_descricao', 'Descrição do campus');
+    \local_suap\save_user_custom_field($campus, 'campus_sigla', 'Sigla do campus');
 
-    \local_suap\save_user_custom_field($cid, 'ingresso_periodo', 'Período de ingresso');
+    $curso = \local_suap\get_or_create('user_info_category', ['name' => 'Curso'], ['sortorder' => \local_suap\get_last_sort_order('user_info_category')])->id;
+    \local_suap\save_user_custom_field($curso, 'curso_id', 'ID do curso');
+    \local_suap\save_user_custom_field($curso, 'curso_codigo', 'Código do curso');
+    \local_suap\save_user_custom_field($curso, 'curso_descricao', 'Descrição do curso');
+    \local_suap\save_user_custom_field($curso, 'curso_modalidade_id', 'Id da modalidade');
+    \local_suap\save_user_custom_field($curso, 'curso_modalidade_descricao', 'Descrição da modalidade');
+    \local_suap\save_user_custom_field($curso, 'curso_nivel_ensino_id', 'Id do nível de ensino');
+    \local_suap\save_user_custom_field($curso, 'curso_nivel_ensino_descricao', 'Descrição do nível de ensino');
 
-    \local_suap\save_user_custom_field($cid, 'nome_apresentacao', 'Nome de apresentação');
-    \local_suap\save_user_custom_field($cid, 'nome_completo', 'Nome completo');
-    \local_suap\save_user_custom_field($cid, 'nome_social', 'Nome social');
-    \local_suap\save_user_custom_field($cid, 'tipo_usuario', 'Tipo de usuário');
-
-    \local_suap\save_user_custom_field($cid, 'programa_nome', 'Nome do programa');
-
-    \local_suap\save_user_custom_field($cid, 'last_login', 'JSON do último login', 'textarea', 0);
+    $turma = \local_suap\get_or_create('user_info_category', ['name' => 'Turma'], ['sortorder' => \local_suap\get_last_sort_order('user_info_category')])->id;
+    \local_suap\save_user_custom_field($turma, 'turma_id', 'ID da última turma');
+    \local_suap\save_user_custom_field($turma, 'turma_codigo', 'Código última da turma');
 
     $DB->execute("INSERT INTO {user_preferences} (userid, name, value) SELECT id, 'visual_preference', 1 FROM {user} ON CONFLICT DO NOTHING");
 }
+
 
 function local_suap_migrate($oldversion)
 {

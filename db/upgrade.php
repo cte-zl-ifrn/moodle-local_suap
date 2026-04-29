@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/upgradelib.php');
+require_once(__DIR__ . '/migrate.php');
 
 function xmldb_local_suap_upgrade($oldversion)
 {

@@ -55,6 +55,10 @@ $string['user_and_enrolment_header_desc'] = 'Top category default settings';
 $string["default_user_preferences"] = 'Default user preferences';
 $string["default_user_preferences_desc"] = 'All new user (student or teacher) will have this preferences. Use one line per preferece. Like a .ini file.';
 
+# Roles mapping
+$string["roles_mapping"] = 'Roles mapping';
+$string["roles_mapping_desc"] = 'Mapping of SUAP roles to Moodle roles, fields: tipo_sala : papel_suap: auth_type : role_shortname : enrol_type. Tipo sala can be: diarios, coordenacoes, autoinscricoes, praticas, modelos or default. Papel suap can be: Principal, Formador, Mediador, Tutor, Conteudista, Coordenador de Curso, Tutor presencial, Coordenador de Polo or Secretário de Curso, or example. Auth type can be: manual, oauth2 or ldap. Role shortname is the shortname of the Moodle role to be used in the enrolment. Enrol type can be: manual, self, guest, etc...';
+
 # Student
 $string["student_settings_header"] = 'Sincronização de estudantes';
 $string["student_settings_header_desc"] = 'Sincronização de estudantes';
