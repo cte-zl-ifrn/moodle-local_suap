@@ -55,9 +55,17 @@ $string['user_and_enrolment_header_desc'] = 'Configurações padrão da categori
 $string["default_user_preferences"] = 'Preferências padrão do usuário';
 $string["default_user_preferences_desc"] = 'Todo novo usuário (aluno ou professor) terá essas preferências. Use uma linha por preferência. Como um arquivo .ini.';
 
-# Roles mapping
+# Mapeamento de papéis
 $string["roles_mapping"] = 'Mapeamento de papéis';
-$string["roles_mapping_desc"] = 'Mapeamento de pares de papéis do SUAP para os papéis do Moodle, campos: tipo_sala : papel_suap: auth_type : role_shortname : enrol_type. Tipo sala can be: diarios, coordenacoes, autoinscricoes, praticas, modelos or default. Papel suap can be: Principal, Formador, Mediador, Tutor, Conteudista, Coordenador de Curso, Tutor presencial, Coordenador de Polo or Secretário de Curso, or example. Auth type can be: manual, oauth2 or ldap. Role shortname is the shortname of the Moodle role to be used in the enrolment. Enrol type can be: manual, self, guest, etc...';
+$string["roles_mapping_desc"] = 'Mapeamento de papéis SUAP para papéis Moodle, campos: (tipo_sala:papel_suap:shortname_do_papel:tipo_inscrição). Tipo sala pode ser: diarios, coordenacoes, autoinscricoes, praticas, modelos ou padrão. Papel suap pode ser: Principal, Formador, Mediador, Tutor, Conteudista, Coordenador de Curso, Tutor presencial, Coordenador de Polo ou Secretário de Curso, por exemplo. Shortname do papel é o shortname do papel Moodle a ser usado na inscrição. Tipo inscrição pode ser: manual, self, guest, etc...';
+
+# Método de autenticação padrão
+$string["default_auth"] = 'Método de autenticação padrão';
+$string["default_auth_desc"] = 'Método de autenticação padrão para novos usuários. Recomendamos que configure oAuth com SUAP, mas... as escolhas são suas. Mas por que oauth? Porque seus usuários podem usufruir do SSO e Painel AVA para SUAP.';
+
+# Mapeamento de métodos de autenticação
+$string["auths_mapping"] = 'Mapeamento de métodos de autenticação';
+$string["auths_mapping_desc"] = 'Mapeamento de método de autenticação para cada papel SUAP, campos: (papel_suap:auth). Papel suap pode ser: Principal, Formador, Mediador, Tutor, Conteudista, Coordenador de Curso, Tutor presencial, Coordenador de Polo ou Secretário de Curso. Auth é o shortname do método de autenticação Moodle a ser usado para usuários com esse papel suap.';
 
 # Student
 $string["student_settings_header"] = 'Sincronização de estudantes';

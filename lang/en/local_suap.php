@@ -57,7 +57,15 @@ $string["default_user_preferences_desc"] = 'All new user (student or teacher) wi
 
 # Roles mapping
 $string["roles_mapping"] = 'Roles mapping';
-$string["roles_mapping_desc"] = 'Mapping of SUAP roles to Moodle roles, fields: tipo_sala : papel_suap: auth_type : role_shortname : enrol_type. Tipo sala can be: diarios, coordenacoes, autoinscricoes, praticas, modelos or default. Papel suap can be: Principal, Formador, Mediador, Tutor, Conteudista, Coordenador de Curso, Tutor presencial, Coordenador de Polo or Secretário de Curso, or example. Auth type can be: manual, oauth2 or ldap. Role shortname is the shortname of the Moodle role to be used in the enrolment. Enrol type can be: manual, self, guest, etc...';
+$string["roles_mapping_desc"] = 'Mapping of SUAP roles to Moodle roles, fields: (tipo_sala:papel_suap:role_shortname:enrol_type). Tipo sala can be: diarios, coordenacoes, autoinscricoes, praticas, modelos or default. Papel suap can be: Principal, Formador, Mediador, Tutor, Conteudista, Coordenador de Curso, Tutor presencial, Coordenador de Polo or Secretário de Curso, or example. Role shortname is the shortname of the Moodle role to be used in the enrolment. Enrol type can be: manual, self, guest, etc...';
+
+# Default authentication method
+$string["default_auth"] = 'Default authentication method';
+$string["default_auth_desc"] = 'Default authentication method for new users. We recommend that you configure oAuth with SOAP, but... the choices are yours. But why oauth? Because your users can take advantage of the SSO and Painel AVA for SUAP.';
+
+# Authentication methods mapping
+$string["auths_mapping"] = 'Authentication methods mapping';
+$string["auths_mapping_desc"] = 'Authenticaton method mapping for each SUAP role, fields: (papel_suap:auth). Papel suap can be: Principal, Formador, Mediador, Tutor, Conteudista, Coordenador de Curso, Tutor presencial, Coordenador de Polo or Secretário de Curso. Auth is the shortname of the Moodle authentication method to be used for users with that papel suap.';
 
 # Student
 $string["student_settings_header"] = 'Sincronização de estudantes';
