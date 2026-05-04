@@ -294,7 +294,11 @@ class sync_up_enrolments_service extends service {
                 : $carry,
             []
         ));
+
         $alunos = getattr($this->json, 'alunos', []);
+        foreach ($alunos as $aluno) {
+            $aluno->tipo_usuario = $aluno->tipo_usuario ?: "Aluno";
+        }
 
         foreach (array_merge($time, $alunos) as $usuario) {
             $this->sync_user($usuario);
@@ -306,12 +310,12 @@ class sync_up_enrolments_service extends service {
     function sync_user($usuario) {
         global $DB;
 
-        $username = strtolower(getattr($usuario, 'matricula', getattr($usuario, 'login')));
+        $usuario->username = strtolower(getattr($usuario, 'username', getattr($usuario, 'matricula', getattr($usuario, 'login'))));
         $nome_parts = explode(' ', $usuario->nome);
         $tipo = getattr($usuario, 'tipo', 'Aluno');
 
         $insert_only = [
-            'username' => $username,
+            'username' => $usuario->username,
             'password' => '!aA1' . uniqid(),
             'timezone' => '99',
             'confirmed' => 1,
@@ -325,12 +329,12 @@ class sync_up_enrolments_service extends service {
             'email' => $usuario->email ?: $usuario->email_secundario,
         ];
 
-        $usuario->user = $DB->get_record("user", ["username" => $username]);
+        $usuario->user = $DB->get_record("user", ["username" => $usuario->username]);
         if ($usuario->user) {
             \user_update_user(array_merge(['id' => $usuario->user->id], $insert_or_update));
         } else {
             \user_create_user(array_merge($insert_or_update, $insert_only));
-            $usuario->user = $DB->get_record("user", ["username" => $username]);
+            $usuario->user = $DB->get_record("user", ["username" => $usuario->username]);
             foreach ($this->default_user_preferences as $parts) {
                 \set_user_preference($parts[0], $parts[1], $usuario->user);
             }
@@ -378,14 +382,14 @@ class sync_up_enrolments_service extends service {
         $turma = getattr($this->json, 'turma', (object)[]);
         $polo = getattr($usuario, 'polo', (object)[]);
         $tipo_doc_certificado = getattr($usuario, 'cpf') == '' ?  'passaporte' : 'cpf';
-        
+
         $custom_fields = [
             // SUAP
             'tipo_usuario' => getattr($usuario, 'tipo_usuario'),
-            'eh_servidor' => getattr($usuario, 'eh_servidor'),
-            'eh_aluno' => getattr($usuario, 'eh_aluno'),
-            'eh_prestador' => getattr($usuario, 'eh_prestador'),
-            'eh_usuarioexterno' => getattr($usuario, 'eh_usuarioexterno'),
+            'eh_servidor' => getattr($usuario, 'eh_servidor', strlen($usuario->username) < 11 ? true : false),
+            'eh_aluno' => getattr($usuario, 'eh_aluno', strlen($usuario->username) > 11 ? true : false),
+            'eh_prestador' => getattr($usuario, 'eh_prestador', strlen($usuario->username) == 11 ? true : false),
+            'eh_usuarioexterno' => getattr($usuario, 'eh_usuarioexterno', strlen($usuario->username) == 11 ? true : false),
             'eh_docente' => getattr($usuario, 'eh_docente'),
             'eh_tecnico_administrativo' => getattr($usuario, 'eh_tecnico_administrativo'),
 
