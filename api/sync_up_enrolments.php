@@ -553,8 +553,6 @@ class sync_up_enrolments_service extends service {
     function sync_enrols_cohorts() {
         global $DB;
 
-        $roles = [];
-        $instances = [];
         $enrol_plugin = enrol_get_plugin("cohort");
         foreach (getattr($this->json, 'coortes', []) as $coorte) {
             if (!$cohort = $DB->get_record('cohort', ['idnumber' => $coorte->idnumber])) {
