@@ -62,7 +62,7 @@ class sync_up_enrolments_service extends service {
     }
 
 
-    function is_user_enrolled_in_role_via_enrolname($userid, $enrol_instance, $roleid): bool {
+    function is_user_enrolled_in_role($user, $enrol_instance, $role): bool {
         global $DB;
 
         $sql = "
@@ -72,14 +72,13 @@ class sync_up_enrolments_service extends service {
                                 JOIN {context}              ctx ON (e.courseid  = ctx.instanceid AND ctx.contextlevel   = 50)
                                     JOIN {role_assignments} ra  ON (ctx.id      = ra.contextid   AND ue.userid          = ra.userid)
             WHERE       ue.userid         = :userid
-              AND       e.id              = :enrolid
+              AND       e.courseid        = :courseid
               AND       ra.roleid         = :roleid
               AND       ue.status         = 0
               AND       e.status          = 0
-
         ";
 
-        return (int) $DB->get_field_sql($sql, ['userid' => $userid, 'enrolid' => $enrol_instance->id, 'roleid' => $roleid]) > 0;
+        return (int) $DB->get_field_sql($sql, ['userid' => $user->id, 'courseid' => $enrol_instance->courseid, 'roleid' => $role->id]) > 0;
     }
 
 
@@ -640,7 +639,7 @@ class sync_up_enrolments_service extends service {
             $status_str = strtolower(getattr($usuario, 'situacao_diario', getattr($usuario, 'status', 'inativo')));
             $status = $status_str === 'ativo' ? \ENROL_USER_ACTIVE : \ENROL_USER_SUSPENDED;
 
-            if ($this->is_user_enrolled_in_role_via_enrolname($usuario->user->id, $m->enrol_instance, $m->role_instance->id)) {
+            if ($this->is_user_enrolled_in_role($usuario->user, $m->enrol_instance, $m->role_instance)) {
                 $m->enrol_plugin->update_user_enrol($m->enrol_instance, $usuario->user->id, $status);
             } else {
                 $m->enrol_plugin->enrol_user($m->enrol_instance, $usuario->user->id, $m->role_instance->id, time(), 0, $status);
