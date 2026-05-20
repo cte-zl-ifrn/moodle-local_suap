@@ -470,7 +470,8 @@ class sync_up_enrolments_service extends service {
 
             /* Obrigatório - Painel AVA */
             "customfield_sala_tipo" => $this->get_sala_tipo(),
-            "customfield_curso_autoinscricao" => $this->isRoom ? '' : (getattr($this->json->curso, 'autoinscricao') == 'true' ? '1' : '0'),
+            "customfield_turma_autoinscricao" => $this->isRoom ? '' : (getattr($this->json->turma, 'autoinscricao') == 'true' ? '1' : '0'),
+            "customfield_restricoes_de_autoinscricao" => json_encode(getattr($this->json->turma, 'restricoes', [])),
 
             /* Obrigatórios - Campus */
             "customfield_campus_id" => $this->json->campus->id,
@@ -496,7 +497,6 @@ class sync_up_enrolments_service extends service {
             "customfield_curso_nivel_ensino_id" => getattr($nivelensino, 'id'),
             "customfield_curso_nivel_ensino_descricao" => getattr($nivelensino, 'descricao'),
             "customfield_curso_conteudo" => json_encode(getattr($this->json->curso, 'conteudo', [])),
-            "customfield_curso_restricoes" => json_encode(getattr($this->json->curso, 'restricoes', [])),
 
             /* Obrigatórios - Componente Curricular */
             "customfield_disciplina_id" => $this->isRoom ? '' : $this->json->componente->id ,

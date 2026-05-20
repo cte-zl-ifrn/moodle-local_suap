@@ -64,7 +64,6 @@ function suap_bulk_course_custom_field() {
     \local_suap\save_course_custom_field($curso, 'curso_nivel_ensino_id', 'ID do nível de ensino do curso');
     \local_suap\save_course_custom_field($curso, 'curso_nivel_ensino_descricao', 'Descrição do nível de ensino do curso');
     \local_suap\save_course_custom_field($curso, 'curso_conteudo', 'Conteúdo do curso');
-    \local_suap\save_course_custom_field($curso, 'curso_restricoes', 'Restrições do curso');
     \local_suap\save_course_custom_field($curso, 'curso_sala_coordenacao', 'É sala de coordenação do curso');
 
     $componente = save_course_custom_category('Disciplina/Componente curricular');
@@ -120,24 +119,9 @@ function suap_bulk_course_custom_field() {
     \local_suap\save_course_custom_field($integrador_ava, 'grupos_sincronizados', 'Grupos sincronizados pelo Integrador AVA');
 
     $painel_ava = save_course_custom_category('Painel AVA');
-    \local_suap\save_course_custom_field($painel_ava, 'curso_autoinscricao', 'Curso aceita autoinscrição', 'checkbox');
     \local_suap\save_course_custom_field($painel_ava, 'sala_tipo', 'Tipo de sala');
-    // $sql = "       SELECT 'diarios'        AS id, 'Diários'        AS data"
-    //      . " UNION SELECT 'autoinscricoes' AS id, 'Autoinscrições' AS data"
-    //      . " UNION SELECT 'coordenacoes'   AS id, 'Coordenações'   AS data"
-    //      . " UNION SELECT 'praticas'       AS id, 'Práticas'       AS data"
-    //      . " UNION SELECT 'modelos'        AS id, 'Modelos'        AS data";    
-    // $configdata = json_encode([
-    //     "required" => "0",
-    //     "uniquevalues" => "0",
-    //     "dynamicsql" => $sql,
-    //     "autocomplete" => "0",
-    //     "defaultvalue" => "",
-    //     "multiselect" => "0",
-    //     "locked" => "1",
-    //     "visibility" => "0"
-    // ]);    
-    // \local_suap\save_course_custom_field($painel_ava, 'sala_tipo', 'Tipo de sala', 'dynamic', $configdata);
+    \local_suap\save_course_custom_field($painel_ava, 'turma_autoinscricao', 'Turma aceita autoinscrição', 'checkbox');
+    \local_suap\save_course_custom_field($painel_ava, 'restricoes_de_autoinscricao', 'Restrições de autoinscrição');
 }
 
 
