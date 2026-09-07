@@ -101,7 +101,7 @@ jobs:
           echo "zipfile=$ZIPFILE" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: ${{ steps.build.outputs.zipfile }}
           generate_release_notes: true
